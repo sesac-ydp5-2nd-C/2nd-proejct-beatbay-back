@@ -11,19 +11,24 @@ const User = (Sequelize, sequelize) => {
                 comment: '유저 pri 키',
             },
             user_id: {
-                type: DataTypes.STRING(100),
+                type: DataTypes.STRING,
                 allowNull: false,
                 comment: '유저 ID',
             },
             user_pw: {
-                type: DataTypes.STRING(100),
+                type: DataTypes.STRING,
                 allowNull: false,
                 comment: '유저 PW',
             },
-            user_name: {
-                type: DataTypes.STRING(30),
+            user_nickname: {
+                type: DataTypes.STRING,
                 allowNull: false,
-                comment: '유저 이름',
+                comment: '유저 닉네임',
+            },
+            user_phone: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                comment: '유저 전화번호',
             },
             user_grade: {
                 type: DataTypes.INTEGER,
@@ -36,9 +41,24 @@ const User = (Sequelize, sequelize) => {
                 comment: '유저 권한',
             },
             user_profile_img: {
-                type: DataTypes.STRING(255),
+                type: DataTypes.STRING,
                 allowNull: true,
                 comment: '유저 프로필 이미지',
+            },
+            user_comment: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                comment: '자기소개',
+            },
+            user_fallow: {
+                type: DataTypes.BIGINT,
+                allowNull: true,
+                comment: '유저 팔로우 수',
+            },
+            user_interest: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                comment: '유저 관심분야',
             },
         },
         {
