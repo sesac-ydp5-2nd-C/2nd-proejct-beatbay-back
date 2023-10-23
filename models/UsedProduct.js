@@ -10,7 +10,7 @@ const UsedProduct = (Sequelize, sequelize) => {
                 autoIncrement: true,
                 commet: '게시글 pri 키',
             },
-            userId: {
+            user_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 coment: '유저 ID',
@@ -30,7 +30,7 @@ const UsedProduct = (Sequelize, sequelize) => {
                 allowNull: false,
                 comment: '거래 가격',
             },
-            filePath: {
+            file_path: {
                 type: DataTypes.STRING,
                 comment: '게시글 첨부파일',
             },
@@ -59,7 +59,12 @@ const UsedProduct = (Sequelize, sequelize) => {
             category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '제품 분류 - 따로 table 존재',
+                comment: '제품 대분류',
+            },
+            sub_category: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: '제품 중분류',
             },
         },
         {

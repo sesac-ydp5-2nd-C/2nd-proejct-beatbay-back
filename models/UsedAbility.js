@@ -10,7 +10,7 @@ const UsedAbility = (Sequelize, sequelize) => {
                 autoIncrement: true,
                 commet: '게시글 pri 키',
             },
-            userId: {
+            user_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 coment: '유저 ID',
@@ -30,7 +30,7 @@ const UsedAbility = (Sequelize, sequelize) => {
                 allowNull: false,
                 comment: '거래 가격',
             },
-            filePath: {
+            file_path: {
                 type: DataTypes.STRING,
                 comment: '게시글 첨부파일',
             },
@@ -59,7 +59,12 @@ const UsedAbility = (Sequelize, sequelize) => {
             category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '재능 분류 - 따로 table 존재',
+                comment: '재능 대분류',
+            },
+            sub_category: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: '재능 중분류',
             },
         },
         {
