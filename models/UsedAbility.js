@@ -20,6 +20,10 @@ const UsedAbility = (Sequelize, DataTypes) => {
                 type: DataTypes.TEXT,
                 allowNull: false,
             },
+            price: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
             filePath: {
                 type: DataTypes.STRING,
             },
