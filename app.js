@@ -1,0 +1,22 @@
+const express = require('express');
+const app = express();
+const PORT = 8000;
+const cors = require('cors');
+// const { sequelize } = require('./models');
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
+
+const test = require('./routes/test');
+app.use('/api', test);
+
+// sequelize.sync({ force: false }).then(() => {
+//     app.listen(port, () => {
+//         console.log(`http://localhost:${PORT}`);
+//     });
+// });
+
+app.listen(PORT, () => {
+    console.log(`http://localhost:${PORT}`);
+});
