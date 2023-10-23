@@ -14,6 +14,8 @@ const sequelize = new Sequelize(
 // 모델 모듈 불러오기
 const User = require('./User')(sequelize, Sequelize);
 const UserAuth = require('./UserAuth')(sequelize, Sequelize);
+const UsedProduct = require('./UsedProduct')(sequelize, Sequelize);
+const UsedAbility = require('./UsedAbility')(sequelize, Sequelize);
 
 // 유저 > 유저권한 외래키
 UserAuth.hasOne(User, {
@@ -24,6 +26,8 @@ UserAuth.hasOne(User, {
 // 모델 db 객체에 저장
 db.User = User;
 db.UserAuth = UserAuth;
+db.UsedProduct = UsedProduct;
+db.UsedAbility = UsedAbility;
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
