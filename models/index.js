@@ -23,6 +23,26 @@ UserAuth.hasOne(User, {
     sourceKey: 'auth_id',
 });
 
+// User : UsedProduct = 1 : N
+User.hasMany(UsedProduct, {foreignKey: 'user_id',
+targetKey: 'user_id'});
+UsedProduct.belongsTo(User, {foreignKey: 'user_id', targetKey:'user_id'})
+
+// User : UsedAbility = 1 : N
+User.hasMany(UsedAbility, {foreignKey: 'user_id',
+targetKey: 'user_id'});
+UsedAbility.belongsTo(User, {foreignKey: 'user_id', targetKey:'user_id'})
+
+// UserAuth : UsedProduct = 1 : N
+UserAuth.hasMany(UsedProduct, {foreignKey: 'auth_id',
+targetKey: 'auth_id'});
+UsedProduct.belongsTo(UserAuth, {foreignKey: 'auth_id', targetKey:'auth_id'})
+
+// UserAuth : UsedAbility = 1 : N
+UserAuth.hasMany(UsedAbility, {foreignKey: 'auth_id',
+targetKey: 'auth_id'});
+UsedAbility.belongsTo(UserAuth, {foreignKey: 'auth_id', targetKey:'auth_id'})
+
 // 모델 db 객체에 저장
 db.User = User;
 db.UserAuth = UserAuth;

@@ -10,11 +10,6 @@ const UsedAbility = (Sequelize, sequelize) => {
                 autoIncrement: true,
                 commet: '게시글 pri 키',
             },
-            user_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                coment: '유저 ID',
-            },
             title: {
                 type: DataTypes.STRING,
                 allowNull: false,
