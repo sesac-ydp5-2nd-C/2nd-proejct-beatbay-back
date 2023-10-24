@@ -11,7 +11,10 @@ app.use(cors());
 const test = require('./routes/test');
 app.use('/api', test);
 
-sequelize.sync({ force: true }).then(() => {
+const userRouter = require('./routes/user');
+app.use('/', userRouter);
+
+sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => {
         console.log(`http://localhost:${PORT}`);
     });

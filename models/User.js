@@ -25,11 +25,6 @@ const User = (Sequelize, sequelize) => {
                 allowNull: false,
                 comment: '유저 닉네임',
             },
-            user_phone: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                comment: '유저 전화번호',
-            },
             user_grade: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
