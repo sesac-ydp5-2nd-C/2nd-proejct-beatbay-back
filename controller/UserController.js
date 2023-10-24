@@ -40,6 +40,25 @@ exports.signupUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
+        const user = await User.findOne({
+            where: { user_id: 'flashrifle' },
+        });
+        console.log(user.user_id);
+        const updateUser = await User.update(
+            {
+                user_comment: '나는 이재민 입니다.',
+                user_fallow: 10,
+                user_interest: '기타',
+            },
+            {
+                where: { id: 6 },
+            }
+        );
+        if (updateUser) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
     } catch {}
 };
 
