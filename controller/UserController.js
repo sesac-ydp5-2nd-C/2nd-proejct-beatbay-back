@@ -38,6 +38,23 @@ exports.signupUser = async (req, res) => {
     }
 };
 
+exports.updateUser = async (req, res) => {
+    try {
+    } catch {}
+};
+
+exports.deleteUser = async (req, res) => {
+    const deleteUser = await User.destroy({
+        where: { user_id: req.body.userId },
+    });
+    if (deleteUser) {
+        res.send(true);
+        return;
+    } else {
+        res.send(false);
+    }
+};
+
 // 비밀번호 암호화 함수
 const saltRounds = 5;
 function bcryptPassword(password) {
