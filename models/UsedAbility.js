@@ -61,6 +61,16 @@ const UsedAbility = (Sequelize, sequelize) => {
                 allowNull: false,
                 comment: '재능 중분류',
             },
+            createdAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+            },
+            updatedAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+            },
         },
         {
             tableName: 'used_ability',

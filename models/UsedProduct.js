@@ -1,4 +1,4 @@
-const { DataTypes, Sequelize } = require('sequelize');
+const { DataTypes, Sequelize, fn } = require('sequelize');
 const UsedProduct = (Sequelize, sequelize) => {
     const model = Sequelize.define(
         'used_product',
@@ -60,6 +60,16 @@ const UsedProduct = (Sequelize, sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '제품 중분류',
+            },
+            createdAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+            },
+            updatedAt: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
             },
         },
         {
