@@ -39,19 +39,37 @@ exports.mypageLike = async (req, res) => {
 // 마이페이지 채팅
 
 // 마이페이지 회원 정보 수정
-exports.mypageUpdate = async (req, res) => {
+exports.updateUser = async (req, res) => {
+    const { userId, userComment, userFallow, userInterest } = req.body;
+    console.log('data : ', req.body);
     try {
-        res.send('mypage Update');
-    } catch (err) {
-        console.log(err);
-    }
+        const updateUser = await User.update(
+            {
+                user_comment: userComment,
+                user_fallow: userFallow,
+                user_interest: userInterest,
+            },
+            {
+                where: { user_id: userId },
+            }
+        );
+        if (updateUser) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    } catch {}
 };
 
 // 마이페이지 회원 정보 삭제
-exports.mypageDelete = async (req, res) => {
-    try {
-        res.send('mypage delete');
-    } catch (err) {
-        console.log(err);
+exports.deleteUser = async (req, res) => {
+    const deleteUser = await User.destroy({
+        where: { user_id: req.body.userId },
+    });
+    if (deleteUser) {
+        res.send(true);
+        return;
+    } else {
+        res.send(false);
     }
 };
