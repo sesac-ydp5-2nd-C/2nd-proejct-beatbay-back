@@ -47,6 +47,21 @@ exports.signupUser = async (req, res) => {
 // 로그인
 exports.userLogin = async (req, res) => {
     try {
+        const { userId, userPw } = req.body;
+        const login = await User.findOne({
+            where: { user_id: userId },
+        });
+        if (login) {
+            if (compareFunc(userPw, login.user_pw) === true) {
+                console.log(true);
+            } else {
+                console.log(false);
+            }
+        } else if (!userId) {
+            console.log('아이디를 입력하세요.');
+        } else {
+            console.log('아이디를 확인하세요');
+        }
     } catch (err) {
         console.log(err);
     }
