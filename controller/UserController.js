@@ -1,11 +1,16 @@
 const { User, Sequelize } = require('../models');
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+const { emailUtil } = require('../utils/emailUtil');
+dotenv.config();
 
 // 유저 목록
 exports.getUser = async (req, res) => {
     try {
         const users = await User.findAll();
         res.send(users);
+        console.log(process.env.EMAIL_ADDRESS);
     } catch (err) {
         console.log(err);
     }
@@ -14,6 +19,7 @@ exports.getUser = async (req, res) => {
 // 회원가입 페이지 로드
 exports.getSignup = async (req, res) => {
     try {
+        res.send('회원가입 페이지');
     } catch (err) {
         console.log(err);
     }
@@ -38,39 +44,16 @@ exports.signupUser = async (req, res) => {
     }
 };
 
-exports.updateUser = async (req, res) => {
+exports.emailCertification = async (req, res) => {
     try {
-        const user = await User.findOne({
-            where: { user_id: 'flashrifle' },
-        });
-        console.log(user.user_id);
-        const updateUser = await User.update(
-            {
-                user_comment: '나는 이재민 입니다.',
-                user_fallow: 10,
-                user_interest: '기타',
-            },
-            {
-                where: { id: 6 },
-            }
-        );
-        if (updateUser) {
-            res.send(true);
-        } else {
-            res.send(false);
-        }
-    } catch {}
-};
+        const { email } = req.body;
+        const message = `<p>회원가입을 위한 인증번호입니다.</p>`;
 
-exports.deleteUser = async (req, res) => {
-    const deleteUser = await User.destroy({
-        where: { user_id: req.body.userId },
-    });
-    if (deleteUser) {
-        res.send(true);
-        return;
-    } else {
-        res.send(false);
+        const authCode = await emailUtil.sendEmail(email, message);
+        res.status(200).send(true);
+        console.log(authCode);
+    } catch (err) {
+        console.log(err);
     }
 };
 
