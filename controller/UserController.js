@@ -44,6 +44,22 @@ exports.signupUser = async (req, res) => {
     }
 };
 
+// 로그인
+exports.userLogin = async (req, res) => {
+    try {
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 로그아웃
+exports.userLogout = async (req, res) => {
+    try {
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 exports.emailCertification = async (req, res) => {
     try {
         const { email } = req.body;
