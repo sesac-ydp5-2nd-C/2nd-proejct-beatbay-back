@@ -19,6 +19,7 @@ exports.getUser = async (req, res) => {
 // 회원가입 페이지 로드
 exports.getSignup = async (req, res) => {
     try {
+        res.send('회원가입 페이지');
     } catch (err) {
         console.log(err);
     }
@@ -53,42 +54,6 @@ exports.emailCertification = async (req, res) => {
         console.log(authCode);
     } catch (err) {
         console.log(err);
-    }
-};
-
-exports.updateUser = async (req, res) => {
-    try {
-        const user = await User.findOne({
-            where: { user_id: 'flashrifle' },
-        });
-        console.log(user.user_id);
-        const updateUser = await User.update(
-            {
-                user_comment: '나는 이재민 입니다.',
-                user_fallow: 10,
-                user_interest: '기타',
-            },
-            {
-                where: { id: 6 },
-            }
-        );
-        if (updateUser) {
-            res.send(true);
-        } else {
-            res.send(false);
-        }
-    } catch {}
-};
-
-exports.deleteUser = async (req, res) => {
-    const deleteUser = await User.destroy({
-        where: { user_id: req.body.userId },
-    });
-    if (deleteUser) {
-        res.send(true);
-        return;
-    } else {
-        res.send(false);
     }
 };
 
