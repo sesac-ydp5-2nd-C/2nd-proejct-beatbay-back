@@ -1,11 +1,16 @@
 const { User, Sequelize } = require('../models');
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+const { emailUtil } = require('../utils/emailUtil');
+dotenv.config();
 
 // 유저 목록
 exports.getUser = async (req, res) => {
     try {
         const users = await User.findAll();
         res.send(users);
+        console.log(process.env.EMAIL_ADDRESS);
     } catch (err) {
         console.log(err);
     }
@@ -33,6 +38,19 @@ exports.signupUser = async (req, res) => {
         });
         res.send(signupUser);
         console.log('result : ', signupUser);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.emailCertification = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const message = `<p>회원가입을 위한 인증번호입니다.</p>`;
+
+        const authCode = await emailUtil.sendEmail(email, message);
+        res.status(200).send(true);
+        console.log(authCode);
     } catch (err) {
         console.log(err);
     }
