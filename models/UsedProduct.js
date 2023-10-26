@@ -3,60 +3,60 @@ const UsedProduct = (Sequelize, sequelize) => {
     const model = Sequelize.define(
         'used_product',
         {
-            id: {
+            product_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 primaryKey: true,
                 autoIncrement: true,
                 commet: '게시글 pri 키',
             },
-            title: {
+            product_title: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 comment: '게시물 제목',
             },
-            content: {
+            product_content: {
                 type: DataTypes.TEXT,
                 allowNull: false,
                 comment: '게시물 내용',
             },
-            price: {
+            product_price: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '거래 가격',
             },
-            file_path: {
+            product_file_path: {
                 type: DataTypes.STRING,
                 comment: '게시글 첨부파일',
             },
-            count: {
+            product_count: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0,
                 comment: '조회수',
             },
-            like: {
+            product_like: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0,
                 comment: '좋아요 수',
             },
-            location: {
+            product_location: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 comment: '거래 지역',
             },
-            status: {
+            product_status: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 comment: '거래 상태(0: 거래 중, 1: 거래 종료)',
             },
-            category: {
+            product_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '제품 대분류',
             },
-            sub_category: {
+            product_sub_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '제품 중분류',

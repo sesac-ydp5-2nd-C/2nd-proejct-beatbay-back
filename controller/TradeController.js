@@ -1,5 +1,6 @@
-const { UsedProduct, UsedAbility, sequelize } = require('../models');
-const Op = require('sequelize').Op;
+// const { UsedProduct, UsedAbility, sequelize } = require('../models');
+// const Op = require('sequelize').Op;
+const { productAll, abilityAll } = require('../utils/productUtil');
 
 // 물품 거래
 exports.tradeProduct = async (req, res) => {
@@ -16,73 +17,13 @@ exports.tradeProduct = async (req, res) => {
         // default : [0 : 전체]
         let categoryNum = 0;
         let subCategoryNum = 0;
-        const whereCondition = {};
-
-        if (categoryNum > 0) {
-            whereCondition.category = categoryNum;
-        }
-
-        if (subCategoryNum > 0) {
-            whereCondition.sub_category = subCategoryNum;
-        }
 
         // Todo 3) 검색어 조건 (제목, 글, 제목 + 글) 정해야 함
         // default : 전체
         let searchKeyword = '';
 
-        if (searchKeyword && searchKeyword.trim() !== '') {
-            whereCondition[Op.or] = [
-                {
-                    title: { [Op.like]: `%${searchKeyword}%` },
-                },
-                {
-                    content: { [Op.like]: `%${searchKeyword}%` },
-                },
-            ];
-        }
-
-        const products = await UsedProduct.findAll({
-            attributes: [
-                'id',
-                'title',
-                'content',
-                'price',
-                'file_path',
-                'count',
-                'like',
-                'location',
-                'status',
-                'category',
-                'sub_category',
-                [
-                    sequelize.fn(
-                        'YEAR',
-                        sequelize.col('used_product.createdAt')
-                    ),
-                    'year',
-                ],
-                [
-                    sequelize.fn(
-                        'MONTH',
-                        sequelize.col('used_product.createdAt')
-                    ),
-                    'month',
-                ],
-                [
-                    sequelize.fn(
-                        'DAY',
-                        sequelize.col('used_product.createdAt')
-                    ),
-                    'day',
-                ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
-                // 'createdAt',
-                'updatedAt',
-                'user_id',
-                'auth_id',
-            ],
-            order: [[sequelize.col(orderMethod), variation]], // 최신 글 순으로 전달될 수 있도록 - 프론트에서 받아오는 조건에 따라 수정되어야 함
-            where: whereCondition, // 들어오는 카테고리 값에 따른 조건
-        });
+        const products = await productAll(variation, orderMethod, categoryNum, subCategoryNum, searchKeyword);
+        
         res.send(products);
     } catch (err) {
         console.log(err);
@@ -104,73 +45,13 @@ exports.tradeAbility = async (req, res) => {
         // default : [0 : 전체]
         let categoryNum = 0;
         let subCategoryNum = 0;
-        const whereCondition = {};
-
-        if (categoryNum > 0) {
-            whereCondition.category = categoryNum;
-        }
-
-        if (subCategoryNum > 0) {
-            whereCondition.sub_category = subCategoryNum;
-        }
 
         // Todo 3) 검색어 조건 (제목, 글, 제목 + 글) 정해야 함
         // default : 전체
         let searchKeyword = '';
 
-        if (searchKeyword && searchKeyword.trim() !== '') {
-            whereCondition[Op.or] = [
-                {
-                    title: { [Op.like]: `%${searchKeyword}%` },
-                },
-                {
-                    content: { [Op.like]: `%${searchKeyword}%` },
-                },
-            ];
-        }
-
-        const abilities = await UsedAbility.findAll({
-            attributes: [
-                'id',
-                'title',
-                'content',
-                'price',
-                'file_path',
-                'count',
-                'like',
-                'location',
-                'status',
-                'category',
-                'sub_category',
-                [
-                    sequelize.fn(
-                        'YEAR',
-                        sequelize.col('used_ability.createdAt')
-                    ),
-                    'year',
-                ],
-                [
-                    sequelize.fn(
-                        'MONTH',
-                        sequelize.col('used_ability.createdAt')
-                    ),
-                    'month',
-                ],
-                [
-                    sequelize.fn(
-                        'DAY',
-                        sequelize.col('used_ability.createdAt')
-                    ),
-                    'day',
-                ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
-                // 'createdAt',
-                'updatedAt',
-                'user_id',
-                'auth_id',
-            ],
-            order: [[sequelize.col(orderMethod), variation]], // 최신 글 순으로 전달될 수 있도록 - 프론트에서 받아오는 조건에 따라 수정되어야 함
-            where: whereCondition, // 들어오는 카테고리 값에 따른 조건
-        });
+        let abilities = await abilityAll(variation, orderMethod, categoryNum, subCategoryNum, searchKeyword);
+        
         res.send(abilities);
     } catch (err) {
         console.log(err);
