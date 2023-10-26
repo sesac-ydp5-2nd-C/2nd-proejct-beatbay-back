@@ -1,7 +1,8 @@
 // main 화면
 exports.index = async (req, res) => {
     try {
-        res.send('main');
+        console.log('session info : ', req.session);
+        res.send(req.session.userInfo);
     } catch (err) {
         console.log(err);
     }
