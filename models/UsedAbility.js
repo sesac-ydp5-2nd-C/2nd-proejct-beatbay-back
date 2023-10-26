@@ -3,60 +3,60 @@ const UsedAbility = (Sequelize, sequelize) => {
     const model = Sequelize.define(
         'used_ability',
         {
-            id: {
+            ability_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 primaryKey: true,
                 autoIncrement: true,
                 commet: '게시글 pri 키',
             },
-            title: {
+            ability_title: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 comment: '게시물 제목',
             },
-            content: {
+            ability_content: {
                 type: DataTypes.TEXT,
                 allowNull: false,
                 comment: '게시물 내용',
             },
-            price: {
+            ability_price: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '거래 가격',
             },
-            file_path: {
+            ability_file_path: {
                 type: DataTypes.STRING,
                 comment: '게시글 첨부파일',
             },
-            count: {
+            ability_count: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0,
                 comment: '조회수',
             },
-            like: {
+            ability_like: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0,
                 comment: '좋아요 수',
             },
-            location: {
+            ability_location: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 comment: '거래 지역',
             },
-            status: {
+            ability_status: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 comment: '거래 상태(0: 거래 중, 1: 거래 종료)',
             },
-            category: {
+            ability_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '재능 대분류',
             },
-            sub_category: {
+            ability_sub_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '재능 중분류',
