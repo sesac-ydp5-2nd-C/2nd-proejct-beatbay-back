@@ -2,8 +2,31 @@ const { User, UsedProduct, UsedAbility } = require('../models');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
+    const { id, userId } = req.session.userInfo;
+    console.log('마이페이지에 로그인된 유저', userId);
     try {
-        res.send('mypage main');
+        const user = await User.findOne({
+            where: { user_id: userId },
+        });
+        const userProduct = await UsedProduct.findAll({
+            where: { user_id: id },
+        });
+        const productCount = await UsedProduct.count({
+            where: { user_id: id },
+        });
+        const userAbility = await UsedAbility.findAll({
+            where: { user_id: id },
+        });
+        const abilityCount = await UsedAbility.count({
+            where: { user_id: id },
+        });
+        res.status(200).send({
+            result: 'mypage main',
+            userData: user,
+            userProduct: userProduct,
+            userAbility: userAbility,
+            count: productCount + abilityCount,
+        });
     } catch (err) {
         console.log(err);
     }
