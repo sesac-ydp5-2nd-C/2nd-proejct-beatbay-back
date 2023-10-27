@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const fileStore = require('session-file-store')(session);
 const dotenv = require('dotenv');
 const app = express();
 const PORT = 8000;
@@ -19,6 +20,7 @@ app.use(
         secret: process.env.SESSION_SECRET_KEY,
         resave: false,
         saveUninitialized: true,
+        store: new fileStore(),
         cookie: {
             httpOnly: true,
             maxAge: 30 * 60 * 1000, // 30분동안 세션 유지
