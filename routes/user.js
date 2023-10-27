@@ -8,7 +8,7 @@ router.get('/signup', controller.getSignup); // 회원가입 페이지 로드
 router.post('/signup', controller.signupUser); // 회원가입 폼 전송
 
 router.post('/login', controller.userLogin); // 로그인
-router.get('/logout', controller.userLogout); // 로그아웃
+router.post('/logout', controller.userLogout); // 로그아웃
 
 router.post('/certification', controller.emailCertification); // 이메일 인증
 
