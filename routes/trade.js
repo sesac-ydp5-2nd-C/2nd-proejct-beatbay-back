@@ -12,8 +12,17 @@ router.get('/product', controller.tradeProduct);
 // 재능 거래
 router.get('/ability', controller.tradeAbility);
 
-// 상세 거래
-router.get('/detail', controller.tradeDetail);
+// 물품 상세 거래
+router.get('/detailProduct', controller.tradeDetailProduct);
+
+// 재능 상세 거래
+router.get('/detailAbility', controller.tradeDetailAbility);
+
+// 물품 삭제
+router.delete('/deleteProduct', controller.productDelete);
+
+// 재능 삭제
+router.delete('/deleteAbility', controller.abilityDelete);
 
 // 판매 거래
 router.get('/sell', controller.tradeSell);

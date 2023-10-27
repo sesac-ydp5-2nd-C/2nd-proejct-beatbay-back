@@ -1,6 +1,9 @@
-// const { UsedProduct, UsedAbility, sequelize } = require('../models');
-// const Op = require('sequelize').Op;
-const { productAll, abilityAll } = require('../utils/productUtil');
+const { productAll, abilityAll } = require('../utils/tradeAll');
+const { productOne, abilityOne } = require('../utils/tradeDetail');
+
+// 함수화하면 필요 없음
+const { UsedProduct, UsedAbility, sequelize } = require('../models');
+const Op = require('sequelize').Op;
 
 // 물품 거래
 exports.tradeProduct = async (req, res) => {
@@ -22,8 +25,14 @@ exports.tradeProduct = async (req, res) => {
         // default : 전체
         let searchKeyword = '';
 
-        const products = await productAll(variation, orderMethod, categoryNum, subCategoryNum, searchKeyword);
-        
+        const products = await productAll(
+            variation,
+            orderMethod,
+            categoryNum,
+            subCategoryNum,
+            searchKeyword
+        );
+
         res.send(products);
     } catch (err) {
         console.log(err);
@@ -50,64 +59,71 @@ exports.tradeAbility = async (req, res) => {
         // default : 전체
         let searchKeyword = '';
 
-        let abilities = await abilityAll(variation, orderMethod, categoryNum, subCategoryNum, searchKeyword);
-        
+        let abilities = await abilityAll(
+            variation,
+            orderMethod,
+            categoryNum,
+            subCategoryNum,
+            searchKeyword
+        );
+
         res.send(abilities);
     } catch (err) {
         console.log(err);
     }
 };
 
-// 상세 거래
-exports.tradeDetail = async (req, res) => {
+// 물품 상세 거래
+exports.tradeDetailProduct = async (req, res) => {
     try {
-        // Todo 1) 물품, 재능 페이지에서 각각 상세 페이지로 넘어올 경우 둘의 차이를 어떻게 받을지 정해야 함 - 리더님께 물어보기
+        let product_id = 1;
 
-        let id = 1;
-
-        const product = await UsedProduct.findOne({
-            attributes: [
-                'id',
-                'title',
-                'content',
-                'price',
-                'file_path',
-                'count',
-                'like',
-                'location',
-                'status',
-                'category',
-                'sub_category',
-                [
-                    sequelize.fn(
-                        'YEAR',
-                        sequelize.col('used_product.createdAt')
-                    ),
-                    'year',
-                ],
-                [
-                    sequelize.fn(
-                        'MONTH',
-                        sequelize.col('used_product.createdAt')
-                    ),
-                    'month',
-                ],
-                [
-                    sequelize.fn(
-                        'DAY',
-                        sequelize.col('used_product.createdAt')
-                    ),
-                    'day',
-                ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
-                // 'createdAt',
-                'updatedAt',
-                'user_id',
-                'auth_id',
-            ],
-            where: id,
-        });
+        let product = await productOne(product_id);
 
         res.send(product);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 재능 상세 거래
+exports.tradeDetailAbility = async (req, res) => {
+    try {
+        let ability_id = 1;
+
+        let ability = await abilityOne(ability_id);
+
+        res.send(ability);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 물품 삭제
+exports.productDelete = async (req, res) => {
+    try {
+        let product_id = 1;
+
+        const product = await UsedProduct.destroy({
+            where: { product_id },
+        });
+
+        res.send('product delete');
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 재능 삭제
+exports.abilityDelete = async (req, res) => {
+    try {
+        let ability_id = 1;
+
+        const ability = await UsedAbility.destroy({
+            where: { ability_id },
+        });
+
+        res.send('ability delete');
     } catch (err) {
         console.log(err);
     }
