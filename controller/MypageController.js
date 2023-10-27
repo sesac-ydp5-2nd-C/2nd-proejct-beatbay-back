@@ -1,4 +1,5 @@
 const { User, UsedProduct, UsedAbility } = require('../models');
+const getDataAndCount = require('../utils/myPageUitls');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
@@ -8,24 +9,15 @@ exports.mypageMain = async (req, res) => {
         const user = await User.findOne({
             where: { user_id: userId },
         });
-        const userProduct = await UsedProduct.findAll({
-            where: { user_id: id },
-        });
-        const productCount = await UsedProduct.count({
-            where: { user_id: id },
-        });
-        const userAbility = await UsedAbility.findAll({
-            where: { user_id: id },
-        });
-        const abilityCount = await UsedAbility.count({
-            where: { user_id: id },
-        });
+        const userProduct = await getDataAndCount(UsedProduct, 'user_id', id);
+        const userAbility = await getDataAndCount(UsedAbility, 'user_id', id);
+        const count = userProduct.count + userProduct.count;
         res.status(200).send({
             result: 'mypage main',
             userData: user,
             userProduct: userProduct,
             userAbility: userAbility,
-            count: productCount + abilityCount,
+            count: count,
         });
     } catch (err) {
         console.log(err);
