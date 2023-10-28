@@ -15,16 +15,7 @@ exports.mypageMain = async (req, res) => {
         const user = await User.findOne({
             where: { user_id: userId },
         });
-        const productFavorite = await getDataAndCount(
-            ProductFavorite,
-            'user_id',
-            id
-        );
-        const abilityFavorite = await getDataAndCount(
-            AbilityFavorite,
-            'user_id',
-            id
-        );
+
         const userProduct = await getDataAndCount(UsedProduct, 'user_id', id);
         const userAbility = await getDataAndCount(UsedAbility, 'user_id', id);
         const itemCount = userProduct.count + userProduct.count;
@@ -35,8 +26,6 @@ exports.mypageMain = async (req, res) => {
             userProduct: userProduct,
             userAbility: userAbility,
             itemCount: itemCount,
-            userFavoriteProduct: productFavorite,
-            userFavoriteAbility: abilityFavorite,
         });
     } catch (err) {
         console.log(err);
@@ -63,8 +52,23 @@ exports.mypageBuy = async (req, res) => {
 
 // 마이페이지 찜
 exports.mypageLike = async (req, res) => {
+    const { id } = req.session.userInfo;
     try {
-        res.send('mypage like');
+        const productFavorite = await getDataAndCount(
+            ProductFavorite,
+            'user_id',
+            id
+        );
+        const abilityFavorite = await getDataAndCount(
+            AbilityFavorite,
+            'user_id',
+            id
+        );
+        res.status(200).send({
+            result: 'mypage like',
+            userFavoriteProduct: productFavorite,
+            userFavoriteAbility: abilityFavorite,
+        });
     } catch (err) {
         console.log(err);
     }
