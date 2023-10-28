@@ -1,4 +1,10 @@
-const { User, UsedProduct, UsedAbility } = require('../models');
+const {
+    User,
+    UsedProduct,
+    UsedAbility,
+    ProductFavorite,
+    AbilityFavorite,
+} = require('../models');
 const getDataAndCount = require('../utils/myPageUitls');
 
 // 마이페이지 메인
@@ -9,15 +15,28 @@ exports.mypageMain = async (req, res) => {
         const user = await User.findOne({
             where: { user_id: userId },
         });
+        const productFavorite = await getDataAndCount(
+            ProductFavorite,
+            'user_id',
+            id
+        );
+        const abilityFavorite = await getDataAndCount(
+            AbilityFavorite,
+            'user_id',
+            id
+        );
         const userProduct = await getDataAndCount(UsedProduct, 'user_id', id);
         const userAbility = await getDataAndCount(UsedAbility, 'user_id', id);
-        const count = userProduct.count + userProduct.count;
+        const itemCount = userProduct.count + userProduct.count;
+
         res.status(200).send({
             result: 'mypage main',
             userData: user,
             userProduct: userProduct,
             userAbility: userAbility,
-            count: count,
+            itemCount: itemCount,
+            userFavoriteProduct: productFavorite,
+            userFavoriteAbility: abilityFavorite,
         });
     } catch (err) {
         console.log(err);
