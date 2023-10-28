@@ -1,13 +1,15 @@
-async function getDataAndCount(model, idField, value) {
+async function getData(model, idField, value) {
     const data = await model.findAll({
         where: { [idField]: value },
     });
+    return data;
+}
 
+async function getCount(model, idField, value) {
     const count = await model.count({
         where: { [idField]: value },
     });
-
-    return { data, count };
+    return count;
 }
 
-module.exports = getDataAndCount;
+module.exports = { getData, getCount };

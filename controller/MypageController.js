@@ -5,7 +5,7 @@ const {
     ProductFavorite,
     AbilityFavorite,
 } = require('../models');
-const getDataAndCount = require('../utils/myPageUitls');
+const userData = require('../utils/myPageUitls');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
@@ -16,15 +16,21 @@ exports.mypageMain = async (req, res) => {
             where: { user_id: userId },
         });
 
-        const userProduct = await getDataAndCount(UsedProduct, 'user_id', id);
-        const userAbility = await getDataAndCount(UsedAbility, 'user_id', id);
-        const itemCount = userProduct.count + userProduct.count;
+        const productCount = await userData.getCount(
+            UsedProduct,
+            'user_id',
+            id
+        );
+        const abilityCount = await userData.getCount(
+            UsedAbility,
+            'user_id',
+            id
+        );
+        const itemCount = productCount + abilityCount;
 
         res.status(200).send({
             result: 'mypage main',
             userData: user,
-            userProduct: userProduct,
-            userAbility: userAbility,
             itemCount: itemCount,
         });
     } catch (err) {
@@ -34,8 +40,15 @@ exports.mypageMain = async (req, res) => {
 
 // 마이페이지 판매
 exports.mypageSell = async (req, res) => {
+    const { id } = req.session.userInfo;
     try {
-        res.send('mypage sell');
+        const userProduct = await userData.getData(UsedProduct, 'user_id', id);
+        const userAbility = await userData.getData(UsedAbility, 'user_id', id);
+        res.status(200).send({
+            result: 'mypage sell',
+            userProduct: userProduct,
+            userAbility: userAbility,
+        });
     } catch (err) {
         console.log(err);
     }
@@ -54,12 +67,12 @@ exports.mypageBuy = async (req, res) => {
 exports.mypageLike = async (req, res) => {
     const { id } = req.session.userInfo;
     try {
-        const productFavorite = await getDataAndCount(
+        const productFavorite = await userData.getData(
             ProductFavorite,
             'user_id',
             id
         );
-        const abilityFavorite = await getDataAndCount(
+        const abilityFavorite = await userData.getData(
             AbilityFavorite,
             'user_id',
             id
