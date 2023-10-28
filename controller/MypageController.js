@@ -1,9 +1,38 @@
-const { User, UsedProduct, UsedAbility } = require('../models');
+const {
+    User,
+    UsedProduct,
+    UsedAbility,
+    ProductFavorite,
+    AbilityFavorite,
+} = require('../models');
+const userData = require('../utils/myPageUitls');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
+    const { id, userId } = req.session.userInfo;
+    console.log('마이페이지에 로그인된 유저', userId);
     try {
-        res.send('mypage main');
+        const user = await User.findOne({
+            where: { user_id: userId },
+        });
+
+        const productCount = await userData.getCount(
+            UsedProduct,
+            'user_id',
+            id
+        );
+        const abilityCount = await userData.getCount(
+            UsedAbility,
+            'user_id',
+            id
+        );
+        const itemCount = productCount + abilityCount;
+
+        res.status(200).send({
+            result: 'mypage main',
+            userData: user,
+            itemCount: itemCount,
+        });
     } catch (err) {
         console.log(err);
     }
@@ -11,8 +40,15 @@ exports.mypageMain = async (req, res) => {
 
 // 마이페이지 판매
 exports.mypageSell = async (req, res) => {
+    const { id } = req.session.userInfo;
     try {
-        res.send('mypage sell');
+        const userProduct = await userData.getData(UsedProduct, 'user_id', id);
+        const userAbility = await userData.getData(UsedAbility, 'user_id', id);
+        res.status(200).send({
+            result: 'mypage sell',
+            userProduct: userProduct,
+            userAbility: userAbility,
+        });
     } catch (err) {
         console.log(err);
     }
@@ -29,8 +65,23 @@ exports.mypageBuy = async (req, res) => {
 
 // 마이페이지 찜
 exports.mypageLike = async (req, res) => {
+    const { id } = req.session.userInfo;
     try {
-        res.send('mypage like');
+        const productFavorite = await userData.getData(
+            ProductFavorite,
+            'user_id',
+            id
+        );
+        const abilityFavorite = await userData.getData(
+            AbilityFavorite,
+            'user_id',
+            id
+        );
+        res.status(200).send({
+            result: 'mypage like',
+            userFavoriteProduct: productFavorite,
+            userFavoriteAbility: abilityFavorite,
+        });
     } catch (err) {
         console.log(err);
     }

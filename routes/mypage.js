@@ -16,7 +16,7 @@ router.get('/like', controller.mypageLike);
 
 // 마이페이지 채팅
 
-router.post('/updateUser', controller.updateUser); // 회원정보 수정
+router.patch('/updateUser', controller.updateUser); // 회원정보 수정
 router.delete('/deleteUser', controller.deleteUser); // 회원탈퇴
 
 module.exports = router;

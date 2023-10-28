@@ -76,6 +76,8 @@ const UsedProduct = (Sequelize, sequelize) => {
             tableName: 'used_product',
             freezeTableName: true,
             timestamps: true,
+            charset: 'utf8mb4',
+            collate: 'utf8mb4_general_ci',
         }
     );
     return model;
