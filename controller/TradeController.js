@@ -25,7 +25,7 @@ exports.tradeProduct = async (req, res) => {
         // default : 전체
         let searchKeyword = '';
 
-        const products = await productAll(
+        let products = await productAll(
             variation,
             orderMethod,
             categoryNum,
@@ -33,7 +33,7 @@ exports.tradeProduct = async (req, res) => {
             searchKeyword
         );
 
-        res.send(products);
+        res.send({ products: products });
     } catch (err) {
         console.log(err);
     }
@@ -67,7 +67,7 @@ exports.tradeAbility = async (req, res) => {
             searchKeyword
         );
 
-        res.send(abilities);
+        res.send({ abilities: abilities });
     } catch (err) {
         console.log(err);
     }
@@ -80,7 +80,7 @@ exports.tradeDetailProduct = async (req, res) => {
 
         let product = await productOne(product_id);
 
-        res.send(product);
+        res.send({ product: product });
     } catch (err) {
         console.log(err);
     }
@@ -93,7 +93,7 @@ exports.tradeDetailAbility = async (req, res) => {
 
         let ability = await abilityOne(ability_id);
 
-        res.send(ability);
+        res.send({ ability: ability });
     } catch (err) {
         console.log(err);
     }
@@ -129,10 +129,63 @@ exports.abilityDelete = async (req, res) => {
     }
 };
 
-// 판매 거래
-exports.tradeSell = async (req, res) => {
+// 판매 거래 등록하기
+exports.postTrade = async (req, res) => {
+    console.log(req.files);
     try {
-        res.send('trade sell');
+        let file_paths = [];
+        let file_path = null;
+        // 파일 정보 유무 확인
+        if (req.files) {
+            for (file of req.files) {
+                const { destination, filename, path } = file;
+                file_path = destination.split('/')[1] + '/' + filename; // 파일명
+                // console.log(file_path);
+                file_paths.push(file_path);
+            }
+        }
+
+        file_paths = JSON.stringify(file_paths);
+        console.log(file_paths);
+
+        // console.log('>>>', req.body);
+
+        // type : 물품 / 재능
+        // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역
+        const {
+            type,
+            title,
+            category,
+            subcategory,
+            price,
+            content,
+            status,
+            method,
+            location,
+            update,
+        } = req.body;
+
+        if (type === '0') {
+            // 물품
+            const product = await UsedProduct.create({
+                product_title: title,
+                product_category: category,
+                product_sub_category: subcategory,
+                product_content: content,
+                product_price: price,
+                product_location: location,
+                product_status: status,
+                product_method: method,
+                product_update: update,
+                product_file_path: file_paths,
+            });
+
+            res.send({ product: product });
+            // res.send(true);
+        } else if (type === 1) {
+            // 재능
+            res.send(true);
+        }
     } catch (err) {
         console.log(err);
     }

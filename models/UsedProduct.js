@@ -26,7 +26,7 @@ const UsedProduct = (Sequelize, sequelize) => {
                 comment: '거래 가격',
             },
             product_file_path: {
-                type: DataTypes.STRING,
+                type: DataTypes.JSON,
                 comment: '게시글 첨부파일',
             },
             product_count: {
@@ -49,7 +49,7 @@ const UsedProduct = (Sequelize, sequelize) => {
             product_status: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: '거래 상태(0: 거래 중, 1: 거래 종료)',
+                comment: '상품 상태',
             },
             product_category: {
                 type: DataTypes.INTEGER,
@@ -60,6 +60,16 @@ const UsedProduct = (Sequelize, sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '제품 중분류',
+            },
+            product_method: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: '제품 거래 방식',
+            },
+            product_update: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: '물품 거래 상태(0: 거래 중, 1: 거래 종료)',
             },
             createdAt: {
                 type: DataTypes.DATE,

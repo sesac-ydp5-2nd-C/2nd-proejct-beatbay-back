@@ -49,7 +49,7 @@ const UsedAbility = (Sequelize, sequelize) => {
             ability_status: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: '거래 상태(0: 거래 중, 1: 거래 종료)',
+                comment: '상품 상태',
             },
             ability_category: {
                 type: DataTypes.INTEGER,
@@ -60,6 +60,16 @@ const UsedAbility = (Sequelize, sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 comment: '재능 중분류',
+            },
+            ability_method: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: '재능 거래 방식',
+            },
+            ability_update: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                comment: '재능 거래 상태(0: 거래 중, 1: 거래 종료)',
             },
             createdAt: {
                 type: DataTypes.DATE,
