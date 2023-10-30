@@ -10,7 +10,6 @@ exports.getUser = async (req, res) => {
     try {
         const users = await User.findAll();
         res.send(users);
-        console.log(process.env.EMAIL_ADDRESS);
     } catch (err) {
         console.log(err);
     }
@@ -33,7 +32,7 @@ exports.signupUser = async (req, res) => {
     const passwordPattern =
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/;
     try {
-        const { userId, userPw, userNickname } = req.body;
+        const { userId, userPw, userNickname, authCode } = req.body;
         if (!emailPattern.test(userId)) {
             return res.status(400).send({
                 result: false,
@@ -46,17 +45,20 @@ exports.signupUser = async (req, res) => {
                     '비밀번호는 최소 8자리 이상이어야 하며, 특수문자(@#$%^&+=!)와 영문자, 숫자를 모두 포함해야 합니다.',
             });
         }
-
-        pw = bcryptPassword(userPw);
-        const signupUser = await User.create({
-            user_id: userId,
-            user_pw: pw,
-            user_nickname: userNickname,
-            user_grade: 0, // 유저 등급 데이터 의견 조율 후 수정
-            auth_id: 0, // 유저 권한 데이터 의견 조율 후 수정
-        });
-        res.send(signupUser);
-        console.log('result : ', signupUser);
+        if (authCode === req.session.emailCode) {
+            pw = bcryptPassword(userPw);
+            const signupUser = await User.create({
+                user_id: userId,
+                user_pw: pw,
+                user_nickname: userNickname,
+                user_grade: 0, // 유저 등급 데이터 의견 조율 후 수정
+                auth_id: 0, // 유저 권한 데이터 의견 조율 후 수정
+            });
+            res.send(signupUser);
+            console.log('result : ', signupUser);
+        } else {
+            res.send('인증번호를 확인하세요');
+        }
     } catch (err) {
         console.log('회원가입 오류 :', err);
         res.status(500).send({
@@ -74,6 +76,7 @@ exports.userLogin = async (req, res) => {
             where: { user_id: userId },
         });
         console.log('로그인 유저정보 : ', login);
+
         if (login) {
             if (compareFunc(userPw, login.user_pw) === true) {
                 req.session.userInfo = {
@@ -125,8 +128,41 @@ exports.emailCertification = async (req, res) => {
         const message = `<p>회원가입을 위한 인증번호입니다.</p>`;
 
         const authCode = await emailUtil.sendEmail(email, message);
-        res.status(200).send(true);
+        req.session.emailCode = authCode;
+        res.status(200).send({ result: true, authCode: authCode });
         console.log(authCode);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.emailCheck = async (req, res) => {
+    try {
+        console.log('입력 코드 :', req.body.emailCode);
+        console.log('이메일 코드 확인 : ', req.session.emailCode);
+        if (req.body.emailCode === req.session.emailCode) {
+            res.status(200).send({
+                result: true,
+                message: '인증번호가 일치합니다',
+            });
+        } else {
+            res.send({ result: false, message: '인증번호를 확인하세요' });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.getFindPass = async (req, res) => {
+    try {
+        res.send('비밀번호 찾기 화면');
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.postFindPass = async (req, res) => {
+    try {
     } catch (err) {
         console.log(err);
     }
