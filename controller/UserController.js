@@ -146,7 +146,10 @@ exports.emailCheck = async (req, res) => {
                 message: '인증번호가 일치합니다',
             });
         } else {
-            res.send({ result: false, message: '인증번호를 확인하세요' });
+            res.status(400).send({
+                result: false,
+                message: '인증번호를 확인하세요',
+            });
         }
     } catch (err) {
         console.log(err);
@@ -163,6 +166,35 @@ exports.getFindPass = async (req, res) => {
 
 exports.postFindPass = async (req, res) => {
     try {
+        const { userId, newPass, emailCode } = req.body;
+        console.log(userId, newPass, emailCode);
+        console.log('이메일 코드 삭제전 :', req.session.emailCode);
+
+        const passwordPattern =
+            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/;
+        if (!passwordPattern.test(newPass)) {
+            return res.status(400).send({
+                result: false,
+                message:
+                    '비밀번호는 최소 8자리 이상이어야 하며, 특수문자(@#$%^&+=!)와 영문자, 숫자를 모두 포함해야 합니다.',
+            });
+        }
+        pw = bcryptPassword(newPass);
+        if (req.body.emailCode === req.session.emailCode) {
+            const updatePw = await User.update(
+                {
+                    user_pw: pw,
+                },
+                {
+                    where: { user_id: userId },
+                }
+            );
+            req.session.emailCode = ''; // 비밀번호 변경 후 session에서 코드 삭제
+            console.log('이메일 코드 삭제: ', req.session.emailCode);
+            res.status(200).send(updatePw);
+        } else {
+            res.send({ result: false, message: '인증번호를 확인하세요' });
+        }
     } catch (err) {
         console.log(err);
     }

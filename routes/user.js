@@ -14,6 +14,6 @@ router.post('/certification', controller.emailCertification); // 이메일 인�
 router.post('/emailCodeCheck', controller.emailCheck); // 전송된 번호 확인
 
 router.get('/findPass', controller.getFindPass); // 비밀번호 찾기 화면
-router.post('/findPass', controller.postFindPass); // 비밀번호 찾기 기능
+router.put('/findPass', controller.postFindPass); // 비밀번호 찾기 기능
 
 module.exports = router;
