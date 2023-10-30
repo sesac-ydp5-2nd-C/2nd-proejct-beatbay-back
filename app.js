@@ -40,6 +40,10 @@ app.use('/', indexRouter);
 const userRouter = require('./routes/user');
 app.use('/user', userRouter);
 
+// 카카오 로그인
+const kakaoRouter = require('./routes/kakao');
+app.use('/kakao', kakaoRouter);
+
 // 마이페이지
 const mypageRouter = require('./routes/mypage');
 app.use('/mypage', mypageRouter);
@@ -51,6 +55,10 @@ app.use('/trade', tradeRouter);
 // 칼럼/공지사항
 const noticeRouter = require('./routes/notice');
 app.use('/notice', noticeRouter);
+
+app.get('*', (req, res) => {
+    res.send('404');
+});
 
 sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => {
