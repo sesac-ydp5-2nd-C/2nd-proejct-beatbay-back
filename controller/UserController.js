@@ -33,6 +33,7 @@ exports.signupUser = async (req, res) => {
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/;
     try {
         const { userId, userPw, userNickname, authCode } = req.body;
+
         if (!emailPattern.test(userId)) {
             return res.status(400).send({
                 result: false,
@@ -45,6 +46,7 @@ exports.signupUser = async (req, res) => {
                     '비밀번호는 최소 8자리 이상이어야 하며, 특수문자(@#$%^&+=!)와 영문자, 숫자를 모두 포함해야 합니다.',
             });
         }
+
         if (authCode === req.session.emailCode) {
             pw = bcryptPassword(userPw);
             const signupUser = await User.create({
@@ -53,6 +55,7 @@ exports.signupUser = async (req, res) => {
                 user_nickname: userNickname,
                 user_grade: 0, // 유저 등급 데이터 의견 조율 후 수정
                 auth_id: 0, // 유저 권한 데이터 의견 조율 후 수정
+                is_kakao: false, // 일반 유저 가입이므로 false
             });
             res.send(signupUser);
             console.log('result : ', signupUser);
@@ -61,6 +64,31 @@ exports.signupUser = async (req, res) => {
         }
     } catch (err) {
         console.log('회원가입 오류 :', err);
+        res.status(500).send({
+            result: false,
+            message: '오류가 발생했습니다.',
+        });
+    }
+};
+
+exports.idCheck = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const userCheck = await User.findOne({
+            where: { user_id: userId },
+        });
+        if (!userCheck) {
+            res.status(200).send({
+                result: true,
+                message: '가입 가능한 아이디 입니다.',
+            });
+        } else {
+            res.status(400).send({
+                result: false,
+                message: '이미 존재하는 아이디 입니다.',
+            });
+        }
+    } catch (err) {
         res.status(500).send({
             result: false,
             message: '오류가 발생했습니다.',

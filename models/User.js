@@ -28,11 +28,13 @@ const User = (Sequelize, sequelize) => {
             user_grade: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
+                default: 0,
                 comment: '유저 등급',
             },
             auth_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
+                default: 0,
                 comment: '유저 권한',
             },
             user_profile_img: {
@@ -54,6 +56,12 @@ const User = (Sequelize, sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: true,
                 comment: '유저 관심분야',
+            },
+            is_kakao: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                default: false,
+                comment: '카카오 유저 확인',
             },
         },
         {
