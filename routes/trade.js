@@ -58,6 +58,9 @@ router.get('/detailProduct', controller.tradeDetailProduct);
 // 재능 상세 거래
 router.get('/detailAbility', controller.tradeDetailAbility);
 
+// 물품 거래 수정
+router.patch('/updateProduct', controller.updateProduct);
+
 // 물품 삭제
 router.delete('/deleteProduct', controller.productDelete);
 
