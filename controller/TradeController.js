@@ -1,29 +1,41 @@
 const { productAll, abilityAll } = require('../utils/tradeAll');
 const { productOne, abilityOne } = require('../utils/tradeDetail');
+const { productCreate, abilityCreate } = require('../utils/sellCreate');
 
 // 함수화하면 필요 없음
 const { UsedProduct, UsedAbility, sequelize } = require('../models');
 const Op = require('sequelize').Op;
+
+const path = require('path');
 
 // 물품 거래
 exports.tradeProduct = async (req, res) => {
     try {
         // Todo 1) 인기순, 최신순, 낮은 가격순, 높은 가격순을 각각 조건으로 받아와야 함
         // default : 최신순
-        let variation = 'DESC'; // 내림차순
-        let orderMethod = 'used_product.createdAt';
+        // let variation = 'DESC'; // 내림차순
+        // let orderMethod = 'used_product.createdAt';
         // let orderMethod = 'used_product.like'; // 인기순 (좋아요 기준)
         // let orderMethod = 'used_product.price';
         // let variation = 'ASC'; // 오름차순
 
         // Todo 2) 카테고리 정수 별로 지정해야 함
         // default : [0 : 전체]
-        let categoryNum = 0;
-        let subCategoryNum = 0;
+        // let categoryNum = 0;
+        // let subCategoryNum = 0;
 
         // Todo 3) 검색어 조건 (제목, 글, 제목 + 글) 정해야 함
         // default : 전체
-        let searchKeyword = '';
+        // let searchKeyword = '';
+
+        console.log('>> 123', req.query);
+        let { orderMethod, categoryNum, subCategoryNum, searchKeyword } =
+            req.query;
+
+        if (orderMethod === 0) {
+            // 최신순
+            let variation = 'DESC';
+        }
 
         let products = await productAll(
             variation,
@@ -138,8 +150,9 @@ exports.postTrade = async (req, res) => {
         // 파일 정보 유무 확인
         if (req.files) {
             for (file of req.files) {
-                const { destination, filename, path } = file;
-                file_path = destination.split('/')[1] + '/' + filename; // 파일명
+                const { destination, filename } = file;
+                file_path =
+                    destination.split(path.sep)[1] + path.sep + filename; // 파일명
                 // console.log(file_path);
                 file_paths.push(file_path);
             }
@@ -147,8 +160,6 @@ exports.postTrade = async (req, res) => {
 
         file_paths = JSON.stringify(file_paths);
         console.log(file_paths);
-
-        // console.log('>>>', req.body);
 
         // type : 물품 / 재능
         // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역
@@ -166,25 +177,42 @@ exports.postTrade = async (req, res) => {
         } = req.body;
 
         if (type === '0') {
+            // postman에서는 text, 실제로는 num
             // 물품
-            const product = await UsedProduct.create({
-                product_title: title,
-                product_category: category,
-                product_sub_category: subcategory,
-                product_content: content,
-                product_price: price,
-                product_location: location,
-                product_status: status,
-                product_method: method,
-                product_update: update,
-                product_file_path: file_paths,
-            });
+            let product = await productCreate(
+                title,
+                category,
+                subcategory,
+                price,
+                content,
+                status,
+                method,
+                location,
+                update,
+                file_paths
+            );
 
             res.send({ product: product });
+            // console.log(product);
             // res.send(true);
-        } else if (type === 1) {
+        } else if (type === '1') {
             // 재능
-            res.send(true);
+            let ability = await abilityCreate(
+                title,
+                category,
+                subcategory,
+                price,
+                content,
+                status,
+                method,
+                location,
+                update,
+                file_paths
+            );
+
+            // console.log(ability);
+            res.send({ ability: ability });
+            // res.send(true);
         }
     } catch (err) {
         console.log(err);

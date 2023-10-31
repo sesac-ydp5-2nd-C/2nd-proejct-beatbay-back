@@ -71,6 +71,11 @@ const UsedProduct = (Sequelize, sequelize) => {
                 allowNull: false,
                 comment: '물품 거래 상태(0: 거래 중, 1: 거래 종료)',
             },
+            product_customer_id: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                comment: '제품 구매자 ID',
+            },
             createdAt: {
                 type: DataTypes.DATE,
                 allowNull: false,
