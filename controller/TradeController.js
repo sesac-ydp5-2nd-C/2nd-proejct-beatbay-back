@@ -1,39 +1,52 @@
 const { productAll, abilityAll } = require('../utils/tradeAll');
 const { productOne, abilityOne } = require('../utils/tradeDetail');
+const { productCreate, abilityCreate } = require('../utils/sellCreate');
+const { checkFile } = require('../utils/fileUtil');
 
 // 함수화하면 필요 없음
 const { UsedProduct, UsedAbility, sequelize } = require('../models');
 const Op = require('sequelize').Op;
 
+// const path = require('path');
+
 // 물품 거래
 exports.tradeProduct = async (req, res) => {
     try {
-        // Todo 1) 인기순, 최신순, 낮은 가격순, 높은 가격순을 각각 조건으로 받아와야 함
-        // default : 최신순
-        let variation = 'DESC'; // 내림차순
-        let orderMethod = 'used_product.createdAt';
-        // let orderMethod = 'used_product.like'; // 인기순 (좋아요 기준)
-        // let orderMethod = 'used_product.price';
-        // let variation = 'ASC'; // 오름차순
+        console.log('>> 쿼리문 ', req.query);
+        let { orderMethod, categoryNum, subCategoryNum, searchKeyword } =
+            req.query;
 
-        // Todo 2) 카테고리 정수 별로 지정해야 함
-        // default : [0 : 전체]
-        let categoryNum = 0;
-        let subCategoryNum = 0;
+        orderMethod = parseInt(orderMethod);
+        categoryNum = parseInt(categoryNum);
+        subCategoryNum = parseInt(subCategoryNum);
+        // console.log('orderMethod >>> ', orderMethod);
 
-        // Todo 3) 검색어 조건 (제목, 글, 제목 + 글) 정해야 함
-        // default : 전체
-        let searchKeyword = '';
+        let variation = 'DESC'; // 내림차순, 오름차순 - default : 내림차순
+        let order; // 정렬
+        if (orderMethod === 0) {
+            // 최신순
+            order = 'used_product.createdAt';
+        } else if (orderMethod === 1) {
+            // 인기순
+            order = 'used_product.like'; // 좋아요 기준
+        } else if (orderMethod === 2) {
+            // 낮은 가격순
+            order = 'used_product.price';
+        } else if (orderMethod === 3) {
+            // 높은 가격순
+            order = 'used_product.price';
+            variation = 'ASC';
+        }
 
-        const products = await productAll(
+        let products = await productAll(
             variation,
-            orderMethod,
+            order,
             categoryNum,
             subCategoryNum,
             searchKeyword
         );
 
-        res.send(products);
+        res.send({ products: products });
     } catch (err) {
         console.log(err);
     }
@@ -42,32 +55,41 @@ exports.tradeProduct = async (req, res) => {
 // 재능 거래
 exports.tradeAbility = async (req, res) => {
     try {
-        // Todo 1) 인기순, 최신순, 낮은 가격순, 높은 가격순을 각각 조건으로 받아와야 함
-        // default : 최신순
-        let variation = 'DESC'; // 내림차순
-        let orderMethod = 'used_ability.createdAt';
-        // let orderMethod = 'used_ability.like'; // 인기순 (좋아요 기준)
-        // let orderMethod = 'used_ability.price';
-        // let variation = 'ASC'; // 오름차순
+        console.log('>> 쿼리문 ', req.query);
+        let { orderMethod, categoryNum, subCategoryNum, searchKeyword } =
+            req.query;
 
-        // Todo 2) 카테고리 정수 별로 지정해야 함
-        // default : [0 : 전체]
-        let categoryNum = 0;
-        let subCategoryNum = 0;
+        orderMethod = parseInt(orderMethod);
+        categoryNum = parseInt(categoryNum);
+        subCategoryNum = parseInt(subCategoryNum);
+        // console.log('orderMethod >>> ', orderMethod);
 
-        // Todo 3) 검색어 조건 (제목, 글, 제목 + 글) 정해야 함
-        // default : 전체
-        let searchKeyword = '';
+        let variation = 'DESC'; // 내림차순, 오름차순 - default : 내림차순
+        let order; // 정렬
+        if (orderMethod === 0) {
+            // 최신순
+            order = 'used_ability.createdAt';
+        } else if (orderMethod === 1) {
+            // 인기순
+            order = 'used_ability.like'; // 좋아요 기준
+        } else if (orderMethod === 2) {
+            // 낮은 가격순
+            order = 'used_ability.price';
+        } else if (orderMethod === 3) {
+            // 높은 가격순
+            order = 'used_ability.price';
+            variation = 'ASC';
+        }
 
         let abilities = await abilityAll(
             variation,
-            orderMethod,
+            order,
             categoryNum,
             subCategoryNum,
             searchKeyword
         );
 
-        res.send(abilities);
+        res.send({ abilities: abilities });
     } catch (err) {
         console.log(err);
     }
@@ -80,7 +102,7 @@ exports.tradeDetailProduct = async (req, res) => {
 
         let product = await productOne(product_id);
 
-        res.send(product);
+        res.send({ product: product });
     } catch (err) {
         console.log(err);
     }
@@ -93,7 +115,19 @@ exports.tradeDetailAbility = async (req, res) => {
 
         let ability = await abilityOne(ability_id);
 
-        res.send(ability);
+        res.send({ ability: ability });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 물품 거래 수정
+exports.updateProduct = async (req, res) => {
+    try {
+        // 파일 유무 확인
+        const filePaths = checkFile(req.files);
+
+        // 기존의 자료를 모두 받아와서 판매 거래 화면에 기본값으로 넣어놓아야 함
     } catch (err) {
         console.log(err);
     }
@@ -129,10 +163,66 @@ exports.abilityDelete = async (req, res) => {
     }
 };
 
-// 판매 거래
-exports.tradeSell = async (req, res) => {
+// 판매 거래 등록하기
+exports.postTrade = async (req, res) => {
+    console.log(req.files);
     try {
-        res.send('trade sell');
+        // 파일 유무 확인
+        const filePaths = checkFile(req.files);
+
+        // type : 물품 / 재능
+        // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역
+        const {
+            type,
+            title,
+            category,
+            subcategory,
+            price,
+            content,
+            status,
+            method,
+            location,
+            update,
+        } = req.body;
+
+        if (type === '0') {
+            // postman에서는 text, 실제로는 num
+            // 물품
+            let product = await productCreate(
+                title,
+                category,
+                subcategory,
+                price,
+                content,
+                status,
+                method,
+                location,
+                update,
+                filePaths
+            );
+
+            res.send({ product: product });
+            // console.log(product);
+            // res.send(true);
+        } else if (type === '1') {
+            // 재능
+            let ability = await abilityCreate(
+                title,
+                category,
+                subcategory,
+                price,
+                content,
+                status,
+                method,
+                location,
+                update,
+                filePaths
+            );
+
+            // console.log(ability);
+            res.send({ ability: ability });
+            // res.send(true);
+        }
     } catch (err) {
         console.log(err);
     }
