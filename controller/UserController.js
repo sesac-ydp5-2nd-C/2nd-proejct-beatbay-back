@@ -108,14 +108,16 @@ exports.userLogin = async (req, res) => {
         if (login) {
             if (compareFunc(userPw, login.user_pw) === true) {
                 req.session.userInfo = {
+                    sessionId: req.sessionID,
                     id: login.id,
                     userId: login.user_id,
                     userNickname: login.user_nickname,
                     userGrade: login.user_grade,
                     authId: login.authId,
                     userProfileImg: login.user_profile_img,
-                    userFallow: login.user_fallow,
+                    userFollowing: login.user_following,
                     userInterest: login.user_interest,
+                    isKakao: login.is_kakao,
                 };
                 const logUserData = req.session.userInfo;
                 console.log(true);

@@ -9,7 +9,7 @@ router.post('/signup', controller.signupUser); // 회원가입 폼 전송
 router.post('/idExists', controller.idCheck); // 아이디 확인
 
 router.post('/login', controller.userLogin); // 로그인
-router.post('/logout', controller.userLogout); // 로그아웃
+router.get('/logout', controller.userLogout); // 로그아웃
 
 router.post('/certification', controller.emailCertification); // 이메일 인증메일 발송
 router.post('/emailCodeCheck', controller.emailCheck); // 전송된 번호 확인
