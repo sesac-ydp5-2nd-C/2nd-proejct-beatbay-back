@@ -4,17 +4,14 @@ const { productCreate, abilityCreate } = require('../utils/sellCreate');
 const { checkFile } = require('../utils/fileUtil');
 const { productUpdate, abilityUpdate } = require('../utils/sellUpdate');
 
-// 함수화하면 필요 없음
 const { UsedProduct, UsedAbility, sequelize } = require('../models');
 const Op = require('sequelize').Op;
-
-// const path = require('path');
 
 // 물품 거래
 exports.tradeProduct = async (req, res) => {
     try {
         console.log('>> 쿼리문 ', req.query);
-        let { orderMethod, categoryNum, subCategoryNum, searchKeyword } =
+        let { orderMethod, categoryNum, subCategoryNum, searchKeyword, page } =
             req.query;
 
         orderMethod = parseInt(orderMethod);
@@ -44,7 +41,8 @@ exports.tradeProduct = async (req, res) => {
             order,
             categoryNum,
             subCategoryNum,
-            searchKeyword
+            searchKeyword,
+            page
         );
 
         res.send({ products: products });
@@ -57,7 +55,7 @@ exports.tradeProduct = async (req, res) => {
 exports.tradeAbility = async (req, res) => {
     try {
         console.log('>> 쿼리문 ', req.query);
-        let { orderMethod, categoryNum, subCategoryNum, searchKeyword } =
+        let { orderMethod, categoryNum, subCategoryNum, searchKeyword, page } =
             req.query;
 
         orderMethod = parseInt(orderMethod);
@@ -87,7 +85,8 @@ exports.tradeAbility = async (req, res) => {
             order,
             categoryNum,
             subCategoryNum,
-            searchKeyword
+            searchKeyword,
+            page
         );
 
         res.send({ abilities: abilities });
@@ -226,6 +225,7 @@ exports.postTrade = async (req, res) => {
     try {
         // 파일 유무 확인
         const filePaths = checkFile(req.files);
+        console.log(req.files.path);
 
         // type : 물품 / 재능
         // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역

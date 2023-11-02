@@ -18,6 +18,7 @@ const UsedProduct = require('./UsedProduct')(sequelize, Sequelize);
 const UsedAbility = require('./UsedAbility')(sequelize, Sequelize);
 const ProductFavorite = require('./ProductFavorite')(sequelize, Sequelize);
 const AbilityFavorite = require('./AbilityFavorite')(sequelize, Sequelize);
+const Follow = require('./Follow')(sequelize, Sequelize);
 
 // 유저 > 유저권한 외래키
 UserAuth.hasOne(User, {
@@ -87,6 +88,19 @@ UsedAbility.hasMany(AbilityFavorite, {
     onUpdate: 'CASCADE',
 });
 
+// User : Follow = N : M
+// 같은 테이블끼리 다대다 관계 -> as로 구별 (JS 객체에서 사용할 이름)
+User.belongsToMany(User, {
+    through: Follow,
+    as: 'Followings',
+    foreignKey: 'follower_id', // DB 컬럼명: 반대로 쓰는 이유는 foreignKey가 남의 테이블 id를 가리키기 때문
+});
+User.belongsToMany(User, {
+    through: Follow,
+    as: 'Followers',
+    foreignKey: 'following_id',
+});
+
 // 모델 db 객체에 저장
 db.User = User;
 db.UserAuth = UserAuth;
@@ -94,6 +108,7 @@ db.UsedProduct = UsedProduct;
 db.UsedAbility = UsedAbility;
 db.ProductFavorite = ProductFavorite;
 db.AbilityFavorite = AbilityFavorite;
+db.Follow = Follow;
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
