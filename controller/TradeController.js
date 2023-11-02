@@ -225,6 +225,7 @@ exports.postTrade = async (req, res) => {
     try {
         // 파일 유무 확인
         const filePaths = checkFile(req.files);
+        console.log(req.files.path);
 
         // type : 물품 / 재능
         // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역
