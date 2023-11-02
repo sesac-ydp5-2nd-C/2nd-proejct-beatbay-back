@@ -75,6 +75,10 @@ app.use('/kakao', kakaoRouter);
 const mypageRouter = require('./routes/mypage');
 app.use('/mypage', mypageRouter);
 
+// 판매자 페이지
+const sellerRouter = require('./routes/seller');
+app.use('/seller', sellerRouter);
+
 // 거래
 const tradeRouter = require('./routes/trade');
 app.use('/trade', tradeRouter);
