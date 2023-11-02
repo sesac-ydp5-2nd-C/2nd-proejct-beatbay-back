@@ -6,6 +6,7 @@ const controller = require('../controller/IndexController');
 router.get('/', controller.index);
 
 router.get('/test', (req, res) => {
+    console.log('?:', res.locals);
     res.send(req.session);
 });
 
