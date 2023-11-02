@@ -116,8 +116,10 @@ exports.kakaoLogout = async (req, res) => {
             );
 
             if (response.status === 200) {
-                req.session.token = '';
-                console.log('세션?:', req.session);
+                req.session.destroy((err) => {
+                    console.log('로그아웃: 세션 삭제 실패 :', err);
+                    return;
+                });
                 return res.redirect('/');
             }
         }
