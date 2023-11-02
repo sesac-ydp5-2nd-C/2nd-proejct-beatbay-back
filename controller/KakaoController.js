@@ -59,6 +59,8 @@ exports.kakaoCallback = async (req, res) => {
             where: { user_id: userData.kakao_account.email },
         });
 
+        console.log('카카오 정정보보: ', idExists);
+
         // 동일한 아이디(이메일)이 존재하면 해당 아이디 정보 업데이트
         let kakaoUser;
         if (idExists) {
@@ -83,12 +85,24 @@ exports.kakaoCallback = async (req, res) => {
                 is_kakao: true,
             });
         }
+        // 카카오 정보 세션에 담기
+        req.session.userInfo = {
+            sessionId: req.sessionID,
+            id: idExists.id,
+            userId: idExists.user_id,
+            userNickname: idExists.user_nickname,
+            userGrade: idExists.user_grade,
+            authId: idExists.authId,
+            userProfileImg: idExists.user_profile_img,
+            userFollowing: idExists.user_following,
+            userInterest: idExists.user_interest,
+            isKakao: idExists.is_kakao,
+        };
 
         if (kakaoUser) {
             res.status(200).send({
                 result: true,
                 message: '카카오 로그인 성공',
-                data: req.session.userData,
             });
         } else {
             res.status(400).send({

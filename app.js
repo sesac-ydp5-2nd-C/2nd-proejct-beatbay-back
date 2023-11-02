@@ -32,6 +32,33 @@ app.use(
 // 쿠키 암호화
 app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 
+// 세션 정보 헤더로 넘기는 미들웨어
+app.use((req, res, next) => {
+    res.locals.id = 0;
+    res.locals.userId = '';
+    res.locals.userNickname = '';
+    res.locals.userGrade = 0;
+    res.locals.authId = 0;
+    res.locals.userProfileImg = '';
+    res.locals.userFollow = 0;
+    res.locals.userInterest = '';
+    res.locals.isKakao = 0;
+    if (req.session.userInfo) {
+        const userInfo = req.session.userInfo;
+        res.locals.sessinId = userInfo.sessionId;
+        res.locals.id = userInfo.id;
+        res.locals.userId = userInfo.userId;
+        res.locals.userNickname = userInfo.userNickname;
+        res.locals.userGrade = userInfo.userGrade;
+        res.locals.authId = userInfo.authId;
+        res.locals.userProfileImg = userInfo.userProfileImg;
+        res.locals.userFollow = userInfo.userFollow;
+        res.locals.userInterest = userInfo.userInterest;
+        res.locals.isKakao = userInfo.isKakao;
+    }
+    next();
+});
+
 // 메인
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
