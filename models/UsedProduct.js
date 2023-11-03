@@ -49,22 +49,25 @@ const UsedProduct = (Sequelize, sequelize) => {
             product_status: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: '상품 상태',
+                comment:
+                    '상품 상태(0: 최상, 1: 상, 2: 중상, 3: 중하, 4: 하, 5: 최하)',
             },
             product_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '제품 대분류',
+                comment: '제품 대분류(0: 전체, 1: 악기, 2: 음반)',
             },
             product_sub_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '제품 중분류',
+                comment:
+                    '제품 중분류(악기일 경우 -> 0: 전체, 1: 관악기, 2: 현악기, 3: 타악기, 4: 건반악기, 5: 전자악기, 6: 앰프/스피커, 7: 악기용품, 8: 기타, 음반일 경우 -> 0: 전체, 1: CD, 2: DVD, 3: LP, 4: 기타)',
             },
             product_method: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '제품 거래 방식',
+                comment:
+                    '제품 거래 방식(0: 직거래, 1: 비대면거래, 2: 둘 다 가능)',
             },
             product_update: {
                 type: DataTypes.INTEGER,

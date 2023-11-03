@@ -1,4 +1,4 @@
-const { UsedProduct, UsedAbility, User , sequelize } = require('../models');
+const { UsedProduct, UsedAbility, User, sequelize } = require('../models');
 const Op = require('sequelize').Op;
 
 const productOne = async (product_id) => {
@@ -15,25 +15,19 @@ const productOne = async (product_id) => {
             'product_status',
             'product_category',
             'product_sub_category',
+            'product_method',
+            'product_update',
+            'product_customer_id',
             [
-                sequelize.fn(
-                    'YEAR',
-                    sequelize.col('used_product.createdAt')
-                ),
+                sequelize.fn('YEAR', sequelize.col('used_product.createdAt')),
                 'year',
             ],
             [
-                sequelize.fn(
-                    'MONTH',
-                    sequelize.col('used_product.createdAt')
-                ),
+                sequelize.fn('MONTH', sequelize.col('used_product.createdAt')),
                 'month',
             ],
             [
-                sequelize.fn(
-                    'DAY',
-                    sequelize.col('used_product.createdAt')
-                ),
+                sequelize.fn('DAY', sequelize.col('used_product.createdAt')),
                 'day',
             ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
             // 'createdAt',
@@ -46,7 +40,7 @@ const productOne = async (product_id) => {
     });
 
     return product;
-}
+};
 
 const abilityOne = async (ability_id) => {
     const ability = await UsedAbility.findOne({
@@ -62,25 +56,19 @@ const abilityOne = async (ability_id) => {
             'ability_status',
             'ability_category',
             'ability_sub_category',
+            'ability_method',
+            'ability_update',
+            'ability_customer_id',
             [
-                sequelize.fn(
-                    'YEAR',
-                    sequelize.col('used_ability.createdAt')
-                ),
+                sequelize.fn('YEAR', sequelize.col('used_ability.createdAt')),
                 'year',
             ],
             [
-                sequelize.fn(
-                    'MONTH',
-                    sequelize.col('used_ability.createdAt')
-                ),
+                sequelize.fn('MONTH', sequelize.col('used_ability.createdAt')),
                 'month',
             ],
             [
-                sequelize.fn(
-                    'DAY',
-                    sequelize.col('used_ability.createdAt')
-                ),
+                sequelize.fn('DAY', sequelize.col('used_ability.createdAt')),
                 'day',
             ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
             // 'createdAt',
@@ -93,6 +81,6 @@ const abilityOne = async (ability_id) => {
     });
 
     return ability;
-}
+};
 
 module.exports = { productOne, abilityOne };

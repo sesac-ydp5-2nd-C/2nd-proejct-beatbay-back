@@ -49,22 +49,26 @@ const UsedAbility = (Sequelize, sequelize) => {
             ability_status: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                comment: '상품 상태',
+                comment:
+                    '상품 상태(0: 최상, 1: 상, 2: 중상, 3: 중하, 4: 하, 5: 최하)',
             },
             ability_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '재능 대분류',
+                comment:
+                    '재능 대분류(0: 전체, 1: 레슨, 2: 악보제작, 3: 녹음/편집, 4: 연주)',
             },
             ability_sub_category: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '재능 중분류',
+                comment:
+                    '재능 중분류(0: 전체, 1: 강원도, 2: 경기도, 3: 경상도, 4: 광주, 5: 대구, 6: 부산, 7: 서울, 8: 울산 9: 세종, 10: 인천, 11: 전라도, 12: 제주도, 13: 충청도)',
             },
             ability_method: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '재능 거래 방식',
+                comment:
+                    '재능 거래 방식(0: 직거래, 1: 비대면거래, 2: 둘 다 가능)',
             },
             ability_update: {
                 type: DataTypes.INTEGER,

@@ -19,6 +19,7 @@ const UsedAbility = require('./UsedAbility')(sequelize, Sequelize);
 const ProductFavorite = require('./ProductFavorite')(sequelize, Sequelize);
 const AbilityFavorite = require('./AbilityFavorite')(sequelize, Sequelize);
 const Follow = require('./Follow')(sequelize, Sequelize);
+const Review = require('./Review')(sequelize, Sequelize);
 
 // 유저 > 유저권한 외래키
 UserAuth.hasOne(User, {
@@ -101,6 +102,18 @@ User.belongsToMany(User, {
     foreignKey: 'following_id',
 });
 
+// User: Review = N : M
+User.belongsToMany(User, {
+    through: Review,
+    as: 'Reviewings',
+    foreignKey: 'seller_id',
+});
+User.belongsToMany(User, {
+    through: Review,
+    as: 'Reviewers',
+    foreignKey: 'buyer_id',
+});
+
 // 모델 db 객체에 저장
 db.User = User;
 db.UserAuth = UserAuth;
@@ -109,6 +122,7 @@ db.UsedAbility = UsedAbility;
 db.ProductFavorite = ProductFavorite;
 db.AbilityFavorite = AbilityFavorite;
 db.Follow = Follow;
+db.Review = Review;
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
