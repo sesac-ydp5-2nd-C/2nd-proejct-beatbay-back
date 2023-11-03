@@ -47,11 +47,6 @@ const User = (Sequelize, sequelize) => {
                 allowNull: true,
                 comment: '자기소개',
             },
-            user_fallow: {
-                type: DataTypes.BIGINT,
-                allowNull: true,
-                comment: '유저 팔로우 수',
-            },
             user_interest: {
                 type: DataTypes.STRING,
                 allowNull: true,

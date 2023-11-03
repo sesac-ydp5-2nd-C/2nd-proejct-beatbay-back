@@ -10,9 +10,10 @@ const Op = require('sequelize').Op;
 // 물품 거래
 exports.tradeProduct = async (req, res) => {
     try {
-        console.log('>> 쿼리문 ', req.query);
         let { orderMethod, categoryNum, subCategoryNum, searchKeyword, page } =
             req.query;
+
+        console.log('>> 쿼리문 ', req.query);
 
         orderMethod = parseInt(orderMethod);
         categoryNum = parseInt(categoryNum);
@@ -26,14 +27,14 @@ exports.tradeProduct = async (req, res) => {
             order = 'used_product.createdAt';
         } else if (orderMethod === 1) {
             // 인기순
-            order = 'used_product.like'; // 좋아요 기준
+            order = 'used_product.product_like'; // 좋아요 기준
         } else if (orderMethod === 2) {
             // 낮은 가격순
-            order = 'used_product.price';
+            order = 'used_product.product_price';
+            variation = 'ASC';
         } else if (orderMethod === 3) {
             // 높은 가격순
-            order = 'used_product.price';
-            variation = 'ASC';
+            order = 'used_product.product_price';
         }
 
         let products = await productAll(
@@ -70,14 +71,14 @@ exports.tradeAbility = async (req, res) => {
             order = 'used_ability.createdAt';
         } else if (orderMethod === 1) {
             // 인기순
-            order = 'used_ability.like'; // 좋아요 기준
+            order = 'used_ability.ability_like'; // 좋아요 기준
         } else if (orderMethod === 2) {
             // 낮은 가격순
-            order = 'used_ability.price';
+            order = 'used_ability.ability_price';
+            variation = 'ASC';
         } else if (orderMethod === 3) {
             // 높은 가격순
-            order = 'used_ability.price';
-            variation = 'ASC';
+            order = 'used_ability.ability_price';
         }
 
         let abilities = await abilityAll(
@@ -192,13 +193,14 @@ exports.update = async (req, res) => {
 // 물품 삭제
 exports.productDelete = async (req, res) => {
     try {
-        let product_id = 1;
+        // let product_id = 1;
+        const { product_id } = req.body;
 
         const product = await UsedProduct.destroy({
             where: { product_id },
         });
 
-        res.send('product delete');
+        res.send({ delete: 'success' });
     } catch (err) {
         console.log(err);
     }
@@ -207,13 +209,14 @@ exports.productDelete = async (req, res) => {
 // 재능 삭제
 exports.abilityDelete = async (req, res) => {
     try {
-        let ability_id = 1;
+        // let ability_id = 1;
+        const { ability_id } = req.body;
 
         const ability = await UsedAbility.destroy({
             where: { ability_id },
         });
 
-        res.send('ability delete');
+        res.send({ delete: 'success' });
     } catch (err) {
         console.log(err);
     }

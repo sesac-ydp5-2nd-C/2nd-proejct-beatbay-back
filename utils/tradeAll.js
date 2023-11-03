@@ -3,7 +3,7 @@ const Op = require('sequelize').Op;
 
 const productAll = async (
     variation,
-    orderMethod,
+    order,
     categoryNum,
     subCategoryNum,
     searchKeyword,
@@ -32,6 +32,9 @@ const productAll = async (
             },
         ];
     }
+
+    console.log('>>> 정렬 방법', order);
+    console.log('>>> 오름차순', variation);
 
     const products = await UsedProduct.findAll({
         attributes: [
@@ -63,7 +66,7 @@ const productAll = async (
             'user_id',
             'auth_id',
         ],
-        order: [[sequelize.col(orderMethod), variation]], // 최신 글 순으로 전달될 수 있도록 - 프론트에서 받아오는 조건에 따라 수정되어야 함
+        order: [[sequelize.col(order), variation]], // 최신 글 순으로 전달될 수 있도록 - 프론트에서 받아오는 조건에 따라 수정되어야 함
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
