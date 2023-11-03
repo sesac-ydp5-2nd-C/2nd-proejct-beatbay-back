@@ -49,6 +49,9 @@ const productAll = async (
             'product_status',
             'product_category',
             'product_sub_category',
+            'product_method',
+            'product_update',
+            'product_customer_id',
             [
                 sequelize.fn('YEAR', sequelize.col('used_product.createdAt')),
                 'year',
@@ -120,6 +123,9 @@ const abilityAll = async (
             'ability_status',
             'ability_category',
             'ability_sub_category',
+            'ability_method',
+            'ability_update',
+            'ability_customer_id',
             [
                 sequelize.fn('YEAR', sequelize.col('used_ability.createdAt')),
                 'year',
