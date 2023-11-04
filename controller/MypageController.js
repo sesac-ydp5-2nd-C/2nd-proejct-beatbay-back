@@ -12,7 +12,7 @@ exports.mypageMain = async (req, res) => {
     // const data = req.headers.Authorization; // 이거로 바뀔거임..
 
     const data = req.session.userInfo;
-    console.log('!@@!$#!#@#@ ', data);
+
     console.log('마이페이지에 로그인된 유저', data);
     try {
         if (data) {
@@ -129,16 +129,20 @@ exports.updateUser = async (req, res) => {
     try {
         const updateUser = await User.update(
             {
+                user_nickname: data.userNickname,
                 user_comment: data.userComment,
-                user_following: data.userFollowing,
                 user_interest: data.userInterest,
             },
             {
                 where: { user_id: data.userId },
             }
         );
-        if (updateUser) {
-            res.status(200)({ result: true, message: '회원정보 수정 성공' });
+        console.log('???: ', updateUser);
+        if (updateUser > 0) {
+            res.status(200).send({
+                result: true,
+                message: '회원정보 수정 성공',
+            });
         } else {
             res.status(400).send({
                 result: false,
@@ -146,7 +150,10 @@ exports.updateUser = async (req, res) => {
             });
         }
     } catch (err) {
-        console.log(err);
+        res.status(500).send({
+            result: false,
+            message: '서버 에러',
+        });
     }
 };
 
