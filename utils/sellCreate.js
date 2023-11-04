@@ -10,7 +10,8 @@ const productCreate = async (
     method,
     location,
     update,
-    file_paths
+    file_paths,
+    id
 ) => {
     const product = await UsedProduct.create({
         product_title: title,
@@ -23,6 +24,7 @@ const productCreate = async (
         product_method: method,
         product_update: update,
         product_file_path: file_paths,
+        user_id: id,
     });
 
     return product;
@@ -38,7 +40,8 @@ const abilityCreate = async (
     method,
     location,
     update,
-    file_paths
+    file_paths,
+    id
 ) => {
     const ability = await UsedAbility.create({
         ability_title: title,
@@ -51,6 +54,7 @@ const abilityCreate = async (
         ability_method: method,
         ability_update: update,
         ability_file_path: file_paths,
+        user_id: id,
     });
 
     return ability;

@@ -130,7 +130,6 @@ exports.updateUser = async (req, res) => {
         const updateUser = await User.update(
             {
                 user_comment: data.userComment,
-                user_following: data.userFollowing,
                 user_interest: data.userInterest,
             },
             {

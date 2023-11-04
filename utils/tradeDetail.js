@@ -32,12 +32,20 @@ const productOne = async (product_id) => {
             ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
             // 'createdAt',
             'updatedAt',
-            'user.user_id',
-            'user.auth_id',
+            'user_id',
+            'auth_id',
+            // 'user.user_nickname',
         ],
         where: product_id,
-        include: [{ model: User }],
+        include: { model: User },
     });
+
+    // console.log('>>>>>>', product.user_id);
+
+    // console.log(
+    //     'userInfo >>> ',
+    //     await User.findOne({ where: { id: product.user_id } })
+    // );
 
     return product;
 };

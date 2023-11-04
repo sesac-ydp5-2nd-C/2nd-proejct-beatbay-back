@@ -99,7 +99,8 @@ exports.tradeAbility = async (req, res) => {
 // 물품 상세 거래
 exports.tradeDetailProduct = async (req, res) => {
     try {
-        let product_id = 1;
+        let { product_id } = req.query;
+        product_id = parseInt(product_id);
 
         let product = await productOne(product_id);
 
@@ -112,7 +113,8 @@ exports.tradeDetailProduct = async (req, res) => {
 // 재능 상세 거래
 exports.tradeDetailAbility = async (req, res) => {
     try {
-        let ability_id = 1;
+        let { ability_id } = req.query;
+        ability_id = parseInt(ability_id);
 
         let ability = await abilityOne(ability_id);
 
@@ -245,6 +247,9 @@ exports.postTrade = async (req, res) => {
             update,
         } = req.body;
 
+        console.log('>>> 세션 정보', req.session.userInfo);
+        const { id } = req.session.userInfo;
+
         if (type === '0') {
             // 물품
             let product = await productCreate(
@@ -257,7 +262,8 @@ exports.postTrade = async (req, res) => {
                 method,
                 location,
                 update,
-                filePaths
+                filePaths,
+                id
             );
 
             res.send({ product: product, upload: 'success' });
@@ -275,7 +281,8 @@ exports.postTrade = async (req, res) => {
                 method,
                 location,
                 update,
-                filePaths
+                filePaths,
+                id
             );
 
             // console.log(ability);
