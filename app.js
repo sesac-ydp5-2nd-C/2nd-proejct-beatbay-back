@@ -38,6 +38,8 @@ app.use(
 // 쿠키 암호화
 app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 
+app.use('/uploads', express.static(__dirname + '/uploads'));
+
 // 세션 정보 헤더로 넘기는 미들웨어
 app.use((req, res, next) => {
     res.locals.id = 0;

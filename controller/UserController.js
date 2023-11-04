@@ -46,7 +46,7 @@ exports.signupUser = async (req, res) => {
             });
         }
 
-        if (authCode === req.session.emailCode) {
+        if (authCode == req.session.emailCode) {
             pw = bcryptPassword(userPw);
             const signupUser = await User.create({
                 user_id: userId,
@@ -170,7 +170,7 @@ exports.emailCheck = async (req, res) => {
     try {
         console.log('입력 코드 :', req.body.emailCode);
         console.log('이메일 코드 확인 : ', req.session.emailCode);
-        if (req.body.emailCode === req.session.emailCode) {
+        if (req.body.emailCode == req.session.emailCode) {
             res.status(200).send({
                 result: true,
                 message: '인증번호가 일치합니다',
