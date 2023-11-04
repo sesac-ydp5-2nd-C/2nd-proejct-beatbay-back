@@ -1,8 +1,12 @@
 const express = require('express');
 const app = express();
-const socket = require('socket.io');
 const http = require('http').createServer(app);
-const io = socket(http); // 채팅을 위한 소켓
+const io = require('socket.io')(http, {
+    cors: {
+        origin: '*',
+    },
+});
+// const io = socket(http); // 채팅을 위한 소켓
 
 app.get('/', (req, res) => {
     res.send('채팅 서버 연결');
@@ -13,9 +17,7 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('newUser', (name) => {
         console.log(name + '입장');
-
         socket.name = name;
-
         io.sockets.emit('update: ', {
             type: 'connect',
             name: 'SERVER',
@@ -23,12 +25,14 @@ io.sockets.on('connection', (socket) => {
         });
     });
 
-    socket.on('message', (data) => {
+    socket.on('message', (data, callback) => {
         data.name = socket.name;
 
         console.log(data);
 
         socket.broadcast.emit('update', data);
+
+        callback();
     });
 
     socket.on('disconnect', () => {
