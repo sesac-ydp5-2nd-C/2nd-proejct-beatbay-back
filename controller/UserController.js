@@ -123,6 +123,7 @@ exports.userLogin = async (req, res) => {
                 res.send({ result: true, logUserData });
             } else {
                 console.log(false);
+                res.status(400).send({ result: false });
             }
         } else if (!userId) {
             console.log('아이디를 입력하세요.');
