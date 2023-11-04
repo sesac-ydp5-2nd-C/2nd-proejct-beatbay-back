@@ -1,5 +1,4 @@
 const { User, Sequelize } = require('../models');
-const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 const { emailUtil } = require('../utils/emailUtil');

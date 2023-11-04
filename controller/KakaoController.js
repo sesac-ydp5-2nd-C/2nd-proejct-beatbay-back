@@ -1,6 +1,7 @@
 const { User, Sequelize } = require('../models');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
 dotenv.config();
 
 exports.kakaoLogin = async (req, res) => {
@@ -63,6 +64,8 @@ exports.kakaoCallback = async (req, res) => {
 
         // 동일한 아이디(이메일)이 존재하면 해당 아이디 정보 업데이트
         let kakaoUser;
+        // 카카오는 비밀번호 사용할 일 없으니 임의값으로 암호화
+        pw = bcryptPassword(userData.kakao_account.email);
         if (idExists) {
             kakaoUser = await User.update(
                 {
@@ -77,7 +80,7 @@ exports.kakaoCallback = async (req, res) => {
         } else {
             kakaoUser = await User.create({
                 user_id: userData.kakao_account.email,
-                user_pw: userData.kakao_account.email,
+                user_pw: pw,
                 user_nickname: userData.properties.nickname,
                 user_grade: 0,
                 auth_id: 0,
@@ -88,7 +91,6 @@ exports.kakaoCallback = async (req, res) => {
         // 카카오 정보 세션에 담기
         req.session.userInfo = {
             sessionId: req.sessionID,
-            id: idExists.id,
             userId: idExists.user_id,
             userNickname: idExists.user_nickname,
             userGrade: idExists.user_grade,
@@ -145,3 +147,13 @@ exports.kakaoLogout = async (req, res) => {
         res.status(500).json('에러');
     }
 };
+
+// 비밀번호 암호화 함수
+const saltRounds = 5;
+function bcryptPassword(password) {
+    return bcrypt.hashSync(password, saltRounds);
+}
+
+function compareFunc(password, hashedPassword) {
+    return bcrypt.compareSync(password, hashedPassword);
+}
