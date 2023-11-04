@@ -35,20 +35,6 @@ UsedProduct.belongsTo(User, { foreignKey: 'user_id', targetKey: 'user_id' });
 User.hasMany(UsedAbility, { foreignKey: 'user_id', targetKey: 'user_id' });
 UsedAbility.belongsTo(User, { foreignKey: 'user_id', targetKey: 'user_id' });
 
-// UserAuth : UsedProduct = 1 : N
-UserAuth.hasMany(UsedProduct, { foreignKey: 'auth_id', targetKey: 'auth_id' });
-UsedProduct.belongsTo(UserAuth, {
-    foreignKey: 'auth_id',
-    targetKey: 'auth_id',
-});
-
-// UserAuth : UsedAbility = 1 : N
-UserAuth.hasMany(UsedAbility, { foreignKey: 'auth_id', targetKey: 'auth_id' });
-UsedAbility.belongsTo(UserAuth, {
-    foreignKey: 'auth_id',
-    targetKey: 'auth_id',
-});
-
 // User : ProductFavorite = 1 : N
 User.hasMany(ProductFavorite, {
     foreignKey: 'user_id',
