@@ -102,9 +102,30 @@ exports.tradeDetailProduct = async (req, res) => {
         let { product_id } = req.query;
         product_id = parseInt(product_id);
 
+        // 조회수 증가
+        await UsedProduct.increment(
+            { product_count: 1 },
+            { where: { product_id: product_id } }
+        );
+
         let product = await productOne(product_id);
 
         res.send({ product: product });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 물품 좋아요
+exports.likeProduct = async (req, res) => {
+    try {
+        const { product_id } = req.body;
+
+        const product = await UsedProduct.update({
+            // 좋아요 상태 추가해야 함
+        });
+
+        res.send('like');
     } catch (err) {
         console.log(err);
     }
@@ -116,9 +137,24 @@ exports.tradeDetailAbility = async (req, res) => {
         let { ability_id } = req.query;
         ability_id = parseInt(ability_id);
 
+        // 조회수 증가
+        await UsedAbility.increment(
+            { ability_count: 1 },
+            { where: { ability_id: ability_id } }
+        );
+
         let ability = await abilityOne(ability_id);
 
         res.send({ ability: ability });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 재능 좋아요
+exports.likeAbility = async (req, res) => {
+    try {
+        res.send('like');
     } catch (err) {
         console.log(err);
     }
