@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const fileStore = require('session-file-store')(session);
 const dotenv = require('dotenv');
 const app = express();
-const http = require('http').createServer(app);
+const io = require('./utils/io');
 const PORT = 8000;
 const cors = require('cors');
 const { sequelize } = require('./models');
@@ -92,8 +92,4 @@ sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => {
         console.log(`http://localhost:${PORT}`);
     });
-});
-
-http.listen(3000, () => {
-    console.log('Connected at 3000');
 });
