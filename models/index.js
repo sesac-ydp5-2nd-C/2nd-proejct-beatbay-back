@@ -20,6 +20,8 @@ const ProductFavorite = require('./ProductFavorite')(sequelize, Sequelize);
 const AbilityFavorite = require('./AbilityFavorite')(sequelize, Sequelize);
 const Follow = require('./Follow')(sequelize, Sequelize);
 const Review = require('./Review')(sequelize, Sequelize);
+const ChatRoom = require('./ChatRoom')(sequelize, Sequelize);
+const ChatMessage = require('./ChatMessage')(sequelize, Sequelize);
 
 // 유저 > 유저권한 외래키
 UserAuth.hasOne(User, {
@@ -100,6 +102,33 @@ User.belongsToMany(User, {
     foreignKey: 'buyer_id',
 });
 
+// ChatRoom : ChatMessage = 1 : N
+// ChatRoom.hasMany(ChatMessage, {
+//     foreignKey: 'chat_room_id',
+//     targetKey: 'chat_room_id',
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE',
+// });
+// UsedAbility : ChatRoom = 1 : N
+// UsedAbility.hasMany(ChatRoom, {
+//     foreignKey: 'pro_abil_id',
+//     targetKey: 'ability_id',
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE',
+// });
+// // UsedProduct : ChatRoom = 1 : N
+// UsedProduct.hasMany(ChatRoom, {
+//     foreignKey: 'pro_abil_id',
+//     targetKey: 'product_id',
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE',
+// });
+// User : ChatRoom = N : M
+// User.belongsTo(ChatRoom, {
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE',
+// });
+
 // 모델 db 객체에 저장
 db.User = User;
 db.UserAuth = UserAuth;
@@ -109,6 +138,8 @@ db.ProductFavorite = ProductFavorite;
 db.AbilityFavorite = AbilityFavorite;
 db.Follow = Follow;
 db.Review = Review;
+db.ChatRoom = ChatRoom;
+db.ChatMessage = ChatMessage;
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
