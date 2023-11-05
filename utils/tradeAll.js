@@ -7,7 +7,9 @@ const productAll = async (
     categoryNum,
     subCategoryNum,
     searchKeyword,
-    page
+    page,
+    update,
+    userId
 ) => {
     const whereCondition = {};
 
@@ -31,6 +33,14 @@ const productAll = async (
                 product_content: { [Op.like]: `%${searchKeyword}%` },
             },
         ];
+    }
+
+    if (update > 0) {
+        whereCondition.product_update = update;
+    }
+
+    if (userId > 0) {
+        whereCondition.user_id = userId;
     }
 
     console.log('>>> 정렬 방법', order);
@@ -83,7 +93,9 @@ const abilityAll = async (
     categoryNum,
     subCategoryNum,
     searchKeyword,
-    page
+    page,
+    update,
+    userId
 ) => {
     const whereCondition = {};
 
@@ -107,6 +119,14 @@ const abilityAll = async (
                 ability_content: { [Op.like]: `%${searchKeyword}%` },
             },
         ];
+    }
+
+    if (update > 0) {
+        whereCondition.ability_update = update;
+    }
+
+    if (userId > 0) {
+        whereCondition.user_id = userId;
     }
 
     const abilities = await UsedAbility.findAll({

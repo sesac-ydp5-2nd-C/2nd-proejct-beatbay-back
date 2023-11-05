@@ -72,7 +72,8 @@ const UsedProduct = (Sequelize, sequelize) => {
             product_update: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                comment: '물품 거래 상태(0: 거래 중, 1: 거래 종료)',
+                comment:
+                    '물품 거래 상태(0: 전체, 1: 판매 중, 2: 예약 중, 3: 거래 완료)',
             },
             product_customer_id: {
                 type: DataTypes.STRING,

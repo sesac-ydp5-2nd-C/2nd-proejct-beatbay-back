@@ -21,7 +21,7 @@ const Follow = (Sequelize, sequelize) => {
         {
             tableName: 'follow',
             freezeTableName: true,
-            timestaps: false,
+            timestamps: false,
         }
     );
     return model;

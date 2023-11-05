@@ -4,8 +4,11 @@ const {
     UsedAbility,
     ProductFavorite,
     AbilityFavorite,
+    Review,
+    Follow,
 } = require('../models');
 const userData = require('../utils/myPageUitls');
+const { productAll, abilityAll } = require('../utils/tradeAll');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
@@ -20,6 +23,7 @@ exports.mypageMain = async (req, res) => {
                 where: { user_id: data.userId },
             });
 
+            // 상품
             const productCount = await userData.getCount(
                 UsedProduct,
                 'user_id',
@@ -32,11 +36,35 @@ exports.mypageMain = async (req, res) => {
             );
             const itemCount = productCount + abilityCount;
 
+            // 후기
+            const reviewCount = await userData.getCount(
+                Review,
+                'seller_id',
+                data.id
+            );
+
+            // 팔로워
+            const followerCount = await userData.getCount(
+                Follow,
+                'following_id',
+                data.id
+            );
+
+            // 팔로잉
+            const followingCount = await userData.getCount(
+                Follow,
+                'follower_id',
+                data.id
+            );
+
             res.status(200).send({
                 result: 'mypage main',
                 sessionId: data.sessionId,
                 userData: user,
                 itemCount: itemCount,
+                reviewCount: reviewCount,
+                followerCount: followerCount,
+                followingCount: followingCount,
             });
         } else {
             res.status(400).send({
@@ -49,26 +77,103 @@ exports.mypageMain = async (req, res) => {
     }
 };
 
+// 메인 - 리뷰
+exports.mypageReview = async (req, res) => {
+    try {
+        const data = req.session.userInfo;
+
+        const review = await Review.findAll({
+            where: { seller_id: data.id },
+            // include: { model: User },
+            //user is not associated to review! 오류 발생
+        });
+
+        res.send({ review: review });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 메인 - 팔로워
+exports.mypageFollower = async (req, res) => {
+    try {
+        const data = req.session.userInfo;
+
+        const follower = await Follow.findAll({
+            where: { following_id: data.id },
+            // include: { model: User },
+        });
+
+        res.send({ follower: follower });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 메인 - 팔로잉
+exports.mypageFollowing = async (req, res) => {
+    try {
+        const data = req.session.userInfo;
+
+        const following = await Follow.findAll({
+            where: { follower_id: data.id },
+            // include: { model: User },
+        });
+
+        res.send({ following: following });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 // 마이페이지 판매
 exports.mypageSell = async (req, res) => {
     const data = req.session.userInfo;
+    let { type } = req.query;
+
     try {
         if (data) {
-            const userProduct = await userData.getData(
-                UsedProduct,
-                'user_id',
-                data.id
-            );
-            const userAbility = await userData.getData(
-                UsedAbility,
-                'user_id',
-                data.id
-            );
-            res.status(200).send({
-                result: 'mypage sell',
-                userProduct: userProduct,
-                userAbility: userAbility,
-            });
+            if (type == 0) {
+                let { update, page } = req.query;
+
+                update = parseInt(update);
+
+                let userProduct = await productAll(
+                    'DESC', // 내림차순
+                    'used_product.createdAt', // 최신순
+                    0, // 전체 대분류
+                    0, // 전체 소분류
+                    '', // 검색어 없음
+                    page,
+                    update,
+                    data.id
+                );
+
+                res.status(200).send({
+                    result: 'mypage sell',
+                    userProduct: userProduct,
+                });
+            } else if (type == 1) {
+                let { update, page } = req.query;
+
+                update = parseInt(update);
+
+                let userAbility = await abilityAll(
+                    'DESC', // 내림차순
+                    'used_ability.createdAt', // 최신순
+                    0, // 전체 대분류
+                    0, // 전체 소분류
+                    '', // 검색어 없음
+                    page,
+                    update,
+                    data.id
+                );
+
+                res.status(200).send({
+                    result: 'mypage sell',
+                    userAbility: userAbility,
+                });
+            }
         } else {
             res.status(400).send({
                 result: false,
