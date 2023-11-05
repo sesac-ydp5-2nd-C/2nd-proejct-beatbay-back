@@ -55,8 +55,14 @@ router.get('/ability', controller.tradeAbility);
 // 물품 상세 거래
 router.get('/detailProduct', controller.tradeDetailProduct);
 
+// 물품 좋아요
+router.patch('/likeProduct', controller.likeProduct);
+
 // 재능 상세 거래
 router.get('/detailAbility', controller.tradeDetailAbility);
+
+// 재능 좋아요
+router.patch('/likeAbility', controller.likeAbility);
 
 // 거래 수정
 router.patch('/update', uploadImg.array('uploadFiles'), controller.update);

@@ -99,7 +99,14 @@ exports.tradeAbility = async (req, res) => {
 // 물품 상세 거래
 exports.tradeDetailProduct = async (req, res) => {
     try {
-        let product_id = 1;
+        let { product_id } = req.query;
+        product_id = parseInt(product_id);
+
+        // 조회수 증가
+        await UsedProduct.increment(
+            { product_count: 1 },
+            { where: { product_id: product_id } }
+        );
 
         let product = await productOne(product_id);
 
@@ -109,14 +116,45 @@ exports.tradeDetailProduct = async (req, res) => {
     }
 };
 
+// 물품 좋아요
+exports.likeProduct = async (req, res) => {
+    try {
+        const { product_id } = req.body;
+
+        const product = await UsedProduct.update({
+            // 좋아요 상태 추가해야 함
+        });
+
+        res.send('like');
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 // 재능 상세 거래
 exports.tradeDetailAbility = async (req, res) => {
     try {
-        let ability_id = 1;
+        let { ability_id } = req.query;
+        ability_id = parseInt(ability_id);
+
+        // 조회수 증가
+        await UsedAbility.increment(
+            { ability_count: 1 },
+            { where: { ability_id: ability_id } }
+        );
 
         let ability = await abilityOne(ability_id);
 
         res.send({ ability: ability });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 재능 좋아요
+exports.likeAbility = async (req, res) => {
+    try {
+        res.send('like');
     } catch (err) {
         console.log(err);
     }
@@ -245,6 +283,9 @@ exports.postTrade = async (req, res) => {
             update,
         } = req.body;
 
+        console.log('>>> 세션 정보', req.session.userInfo);
+        const { id } = req.session.userInfo;
+
         if (type === '0') {
             // 물품
             let product = await productCreate(
@@ -257,7 +298,8 @@ exports.postTrade = async (req, res) => {
                 method,
                 location,
                 update,
-                filePaths
+                filePaths,
+                id
             );
 
             res.send({ product: product, upload: 'success' });
@@ -275,7 +317,8 @@ exports.postTrade = async (req, res) => {
                 method,
                 location,
                 update,
-                filePaths
+                filePaths,
+                id
             );
 
             // console.log(ability);
