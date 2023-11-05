@@ -17,6 +17,7 @@ router.get('/like', controller.mypageLike);
 
 // 마이페이지 채팅
 router.get('/chat', chat.userChat);
+// router.post('/chat/:productId/:roomId', chat.postChat);
 
 router.put('/updateUser', controller.updateUser); // 회원정보 수정
 router.delete('/deleteUser', controller.deleteUser); // 회원탈퇴
