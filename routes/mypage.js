@@ -6,6 +6,15 @@ const chat = require('../controller/ChatController');
 // 마이페이지 메인
 router.get('/', controller.mypageMain);
 
+// 메인 - 리뷰
+router.get('/mainReview', controller.mypageReview);
+
+// 메인 - 팔로워
+router.get('/mainFollower', controller.mypageFollower);
+
+// 메인 - 팔로잉
+router.get('/mainFollowing', controller.mypageFollowing);
+
 // 마이페이지 판매
 router.get('/sell', controller.mypageSell);
 

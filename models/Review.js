@@ -28,7 +28,9 @@ const Review = (Sequelize, sequelize) => {
         {
             tableName: 'review',
             freezeTableName: true,
-            timestaps: false,
+            timestamps: false,
+            charset: 'utf8mb4',
+            collate: 'utf8mb4_general_ci',
         }
     );
     return model;
