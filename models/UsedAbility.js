@@ -35,12 +35,6 @@ const UsedAbility = (Sequelize, sequelize) => {
                 defaultValue: 0,
                 comment: '조회수',
             },
-            ability_like: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                defaultValue: 0,
-                comment: '좋아요 수',
-            },
             ability_location: {
                 type: DataTypes.STRING,
                 allowNull: false,

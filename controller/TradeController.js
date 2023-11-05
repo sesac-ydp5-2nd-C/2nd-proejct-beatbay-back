@@ -4,7 +4,13 @@ const { productCreate, abilityCreate } = require('../utils/sellCreate');
 const { checkFile } = require('../utils/fileUtil');
 const { productUpdate, abilityUpdate } = require('../utils/sellUpdate');
 
-const { UsedProduct, UsedAbility, sequelize } = require('../models');
+const {
+    UsedProduct,
+    UsedAbility,
+    ProductFavorite,
+    AbilityFavorite,
+    sequelize,
+} = require('../models');
 const Op = require('sequelize').Op;
 
 // 물품 거래
@@ -18,7 +24,6 @@ exports.tradeProduct = async (req, res) => {
         orderMethod = parseInt(orderMethod);
         categoryNum = parseInt(categoryNum);
         subCategoryNum = parseInt(subCategoryNum);
-        // console.log('orderMethod >>> ', orderMethod);
 
         let variation = 'DESC'; // 내림차순, 오름차순 - default : 내림차순
         let order; // 정렬
@@ -55,14 +60,12 @@ exports.tradeProduct = async (req, res) => {
 // 재능 거래
 exports.tradeAbility = async (req, res) => {
     try {
-        console.log('>> 쿼리문 ', req.query);
         let { orderMethod, categoryNum, subCategoryNum, searchKeyword, page } =
             req.query;
 
         orderMethod = parseInt(orderMethod);
         categoryNum = parseInt(categoryNum);
         subCategoryNum = parseInt(subCategoryNum);
-        // console.log('orderMethod >>> ', orderMethod);
 
         let variation = 'DESC'; // 내림차순, 오름차순 - default : 내림차순
         let order; // 정렬
@@ -120,12 +123,26 @@ exports.tradeDetailProduct = async (req, res) => {
 exports.likeProduct = async (req, res) => {
     try {
         const { product_id } = req.body;
+        const { id } = req.session.userInfo;
 
-        const product = await UsedProduct.update({
-            // 좋아요 상태 추가해야 함
+        const status = await ProductFavorite.findOne({
+            where: { product_id, user_id: id },
         });
 
-        res.send('like');
+        if (status) {
+            await ProductFavorite.destroy({
+                where: { product_id, user_id: id },
+            });
+
+            res.send({ like: 'cancel' });
+        } else {
+            const productLike = await ProductFavorite.create({
+                user_id: id,
+                product_id: product_id,
+            });
+
+            res.send({ productLike, like: 'success' });
+        }
     } catch (err) {
         console.log(err);
     }
@@ -154,7 +171,27 @@ exports.tradeDetailAbility = async (req, res) => {
 // 재능 좋아요
 exports.likeAbility = async (req, res) => {
     try {
-        res.send('like');
+        const { ability_id } = req.body;
+        const { id } = req.session.userInfo;
+
+        const status = await AbilityFavorite.findOne({
+            where: { ability_id, user_id: id },
+        });
+
+        if (status) {
+            await AbilityFavorite.destroy({
+                where: { ability_id, user_id: id },
+            });
+
+            res.send({ like: 'cancel' });
+        } else {
+            const abilityLike = await AbilityFavorite.create({
+                user_id: id,
+                ability_id: ability_id,
+            });
+
+            res.send({ abilityLike, like: 'success' });
+        }
     } catch (err) {
         console.log(err);
     }
@@ -166,7 +203,6 @@ exports.update = async (req, res) => {
         // 파일 유무 확인
         const filePaths = checkFile(req.files);
 
-        // type : 물품 / 재능
         // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역
         const {
             type,
@@ -182,10 +218,7 @@ exports.update = async (req, res) => {
             id,
         } = req.body;
 
-        // console.log('body >>>>>>>', req.body);
-
-        if (type === '0') {
-            // 물품
+        if (type == 0) {
             const product_id = parseInt(id);
 
             const updateProduct = await productUpdate(
@@ -203,8 +236,7 @@ exports.update = async (req, res) => {
             );
 
             res.send({ product: updateProduct, update: 'success' });
-        } else if (type == '1') {
-            // 재능
+        } else if (type == 1) {
             const ability_id = parseInt(id);
 
             const updateAbility = await abilityUpdate(
@@ -231,10 +263,9 @@ exports.update = async (req, res) => {
 // 물품 삭제
 exports.productDelete = async (req, res) => {
     try {
-        // let product_id = 1;
         const { product_id } = req.body;
 
-        const product = await UsedProduct.destroy({
+        await UsedProduct.destroy({
             where: { product_id },
         });
 
@@ -247,10 +278,9 @@ exports.productDelete = async (req, res) => {
 // 재능 삭제
 exports.abilityDelete = async (req, res) => {
     try {
-        // let ability_id = 1;
         const { ability_id } = req.body;
 
-        const ability = await UsedAbility.destroy({
+        await UsedAbility.destroy({
             where: { ability_id },
         });
 
@@ -286,8 +316,7 @@ exports.postTrade = async (req, res) => {
         console.log('>>> 세션 정보', req.session.userInfo);
         const { id } = req.session.userInfo;
 
-        if (type === '0') {
-            // 물품
+        if (type == 0) {
             let product = await productCreate(
                 title,
                 category,
@@ -303,10 +332,7 @@ exports.postTrade = async (req, res) => {
             );
 
             res.send({ product: product, upload: 'success' });
-            // console.log(product);
-            // res.send(true);
-        } else if (type === '1') {
-            // 재능
+        } else if (type == 1) {
             let ability = await abilityCreate(
                 title,
                 category,
@@ -321,9 +347,7 @@ exports.postTrade = async (req, res) => {
                 id
             );
 
-            // console.log(ability);
             res.send({ ability: ability, upload: 'success' });
-            // res.send(true);
         }
     } catch (err) {
         console.log(err);

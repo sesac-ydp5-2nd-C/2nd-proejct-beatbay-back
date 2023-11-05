@@ -197,23 +197,44 @@ exports.mypageBuy = async (req, res) => {
 // 마이페이지 찜
 exports.mypageLike = async (req, res) => {
     const data = req.session.userInfo;
+    let { type } = req.query;
+
     try {
         if (data) {
-            const productFavorite = await userData.getData(
-                ProductFavorite,
-                'user_id',
-                data.id
-            );
-            const abilityFavorite = await userData.getData(
-                AbilityFavorite,
-                'user_id',
-                data.id
-            );
-            res.status(200).send({
-                result: 'mypage like',
-                userFavoriteProduct: productFavorite,
-                userFavoriteAbility: abilityFavorite,
-            });
+            if (type == 0) {
+                // const productFavorite = await userData.getData(
+                //     ProductFavorite,
+                //     'user_id',
+                //     data.id
+                // );
+
+                const productFavorite = await ProductFavorite.findAll({
+                    where: { user_id: data.id },
+                    // include: {
+                    //     model: UsedProduct,
+                    //     where: {
+                    //         product_id: ProductFavorite.product_id,
+                    //     },
+                    // },
+                    // used_product is not associated to product_favorite!
+                });
+
+                res.status(200).send({
+                    result: 'mypage like',
+                    userFavoriteProduct: productFavorite,
+                });
+            } else if (type == 1) {
+                const abilityFavorite = await userData.getData(
+                    AbilityFavorite,
+                    'user_id',
+                    data.id
+                );
+
+                res.status(200).send({
+                    result: 'mypage like',
+                    userFavoriteAbility: abilityFavorite,
+                });
+            }
         } else {
             res.status(400).send({
                 result: false,
