@@ -11,6 +11,7 @@ const { sequelize } = require('./models');
 dotenv.config();
 
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 app.use(express.json());
 app.use(
     cors({
@@ -36,7 +37,6 @@ app.use(
     })
 );
 // 쿠키 암호화
-app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 
 app.use('/uploads', express.static(__dirname + '/uploads'));
 

@@ -1,3 +1,4 @@
+const { ChatMessage, sequelize } = require('../models');
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -6,6 +7,7 @@ const io = require('socket.io')(http, {
         origin: '*',
     },
 });
+
 // const io = socket(http); // 채팅을 위한 소켓
 
 app.get('/', (req, res) => {
@@ -17,6 +19,7 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('newUser', (name) => {
         console.log(name + '입장');
+
         socket.name = name;
         io.sockets.emit('update: ', {
             type: 'connect',
@@ -25,8 +28,15 @@ io.sockets.on('connection', (socket) => {
         });
     });
 
-    socket.on('message', (data, callback) => {
+    socket.on('message', async (data, callback) => {
         data.name = socket.name;
+        const chatInput = await ChatMessage.create({
+            chat_room_id: 1,
+            sender_id: 1,
+            receiver_id: 2,
+            content: data.message,
+            sent_at: new Date(),
+        });
 
         console.log(data);
 
