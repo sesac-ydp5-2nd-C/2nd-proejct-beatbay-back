@@ -78,13 +78,16 @@ const productAll = async (
             'updatedAt',
             'user_id',
         ],
-        order: [[sequelize.col(order), variation]], // 최신 글 순으로 전달될 수 있도록 - 프론트에서 받아오는 조건에 따라 수정되어야 함
+        order: [[sequelize.col(order), variation]],
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
     });
 
-    return products;
+    let totalItemCount = Object.keys(products).length;
+    let totalPages = Math.ceil(totalItemCount / perPage);
+
+    return { products, pageNum, totalPages };
 };
 
 const abilityAll = async (
@@ -161,13 +164,16 @@ const abilityAll = async (
             'updatedAt',
             'user_id',
         ],
-        order: [[sequelize.col(orderMethod), variation]], // 최신 글 순으로 전달될 수 있도록 - 프론트에서 받아오는 조건에 따라 수정되어야 함
+        order: [[sequelize.col(orderMethod), variation]],
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
     });
 
-    return abilities;
+    let totalItemCount = Object.keys(abilities).length;
+    let totalPages = Math.ceil(totalItemCount / perPage);
+
+    return { abilities, pageNum, totalPages };
 };
 
 module.exports = { productAll, abilityAll };
