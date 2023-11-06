@@ -3,6 +3,7 @@ const { productOne, abilityOne } = require('../utils/tradeDetail');
 const { productCreate, abilityCreate } = require('../utils/sellCreate');
 const { checkFile } = require('../utils/fileUtil');
 const { productUpdate, abilityUpdate } = require('../utils/sellUpdate');
+const CountFunc = require('../utils/myPageUitls');
 
 const {
     UsedProduct,
@@ -104,6 +105,24 @@ exports.tradeDetailProduct = async (req, res) => {
     try {
         let { product_id } = req.query;
         product_id = parseInt(product_id);
+        let isLike; // 좋아요 여부
+
+        // 좋아요 여부 isLike에 넣어서 알려주기
+        const data = req.session.userInfo;
+        if (data) {
+            let status = await ProductFavorite.findOne({
+                where: { product_id, user_id: data.id },
+            });
+
+            if (status) {
+                isLike = 1;
+            } else {
+                isLike = 0;
+            }
+        } else {
+            // 비회원일경우
+            isLike = 0;
+        }
 
         // 조회수 증가
         await UsedProduct.increment(
@@ -111,9 +130,16 @@ exports.tradeDetailProduct = async (req, res) => {
             { where: { product_id: product_id } }
         );
 
+        // 좋아요 갯수
+        let likeCount = await CountFunc.getCount(
+            ProductFavorite,
+            'product_id',
+            product_id
+        );
+
         let product = await productOne(product_id);
 
-        res.send({ product: product });
+        res.send({ product: product, isLike, likeCount });
     } catch (err) {
         console.log(err);
     }
@@ -154,15 +180,41 @@ exports.tradeDetailAbility = async (req, res) => {
         let { ability_id } = req.query;
         ability_id = parseInt(ability_id);
 
+        let isLike; // 좋아요 여부
+
+        // 좋아요 여부 isLike에 넣어서 알려주기
+        const data = req.session.userInfo;
+        if (data) {
+            let status = await AbilityFavorite.findOne({
+                where: { ability_id, user_id: data.id },
+            });
+
+            if (status) {
+                isLike = 1;
+            } else {
+                isLike = 0;
+            }
+        } else {
+            // 비회원일경우
+            isLike = 0;
+        }
+
         // 조회수 증가
         await UsedAbility.increment(
             { ability_count: 1 },
             { where: { ability_id: ability_id } }
         );
 
+        // 좋아요 갯수
+        let likeCount = await CountFunc.getCount(
+            AbilityFavorite,
+            'ability_id',
+            ability_id
+        );
+
         let ability = await abilityOne(ability_id);
 
-        res.send({ ability: ability });
+        res.send({ ability: ability, isLike, likeCount });
     } catch (err) {
         console.log(err);
     }
@@ -197,7 +249,7 @@ exports.likeAbility = async (req, res) => {
     }
 };
 
-// 물품 거래 수정
+// 거래 수정
 exports.update = async (req, res) => {
     try {
         // 파일 유무 확인
@@ -255,6 +307,41 @@ exports.update = async (req, res) => {
 
             res.send({ ability: updateAbility, update: 'success' });
         }
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 거래 상태 수정
+exports.updateStatus = async (req, res) => {
+    try {
+        const { type, update, id } = req.body;
+
+        if (type == 0) {
+            await UsedProduct.update(
+                {
+                    product_update: update,
+                },
+                {
+                    where: { product_id: id },
+                }
+            );
+
+            res.send({ update: 'product_update change success' });
+        } else if (type == 1) {
+            await UsedAbility.update(
+                {
+                    ability_update: update,
+                },
+                {
+                    where: { ability_id: id },
+                }
+            );
+
+            res.send({ update: 'ability_update change success' });
+        }
+
+        res.send('updateStatus');
     } catch (err) {
         console.log(err);
     }

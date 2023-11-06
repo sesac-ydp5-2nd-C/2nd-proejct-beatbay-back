@@ -67,6 +67,9 @@ router.patch('/likeAbility', controller.likeAbility);
 // 거래 수정
 router.patch('/update', uploadImg.array('uploadFiles'), controller.update);
 
+// 거래 상태 수정
+router.patch('/updateStatus', controller.updateStatus);
+
 // 물품 삭제
 router.delete('/deleteProduct', controller.productDelete);
 
