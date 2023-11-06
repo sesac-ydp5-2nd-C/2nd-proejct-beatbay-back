@@ -53,7 +53,7 @@ exports.signupUser = async (req, res) => {
                 user_pw: pw,
                 user_nickname: userNickname,
                 user_grade: 0, // 유저 등급 데이터 의견 조율 후 수정
-                auth_id: 0, // 유저 권한 데이터 의견 조율 후 수정
+                auth_id: 1, // 유저 권한 데이터 의견 조율 후 수정
                 is_kakao: false, // 일반 유저 가입이므로 false
             });
             res.send(signupUser);

@@ -114,32 +114,24 @@ User.belongsToMany(User, {
     foreignKey: 'following_id',
 });
 
+Follow.belongsTo(User, { foreignKey: 'follower_id', as: 'Follower' });
+Follow.belongsTo(User, { foreignKey: 'following_id', as: 'Following' });
+
 // User: Review = N : M
-// User.belongsToMany(User, {
-//     through: Review,
-//     as: 'Reviewings',
-//     foreignKey: 'seller_id',
-// });
-// User.belongsToMany(User, {
-//     through: Review,
-//     as: 'Reviewers',
-//     foreignKey: 'buyer_id',
-// });
-
-// User와 Review 간의 다대다 관계 설정
 User.belongsToMany(User, {
-    as: 'SellerReviews', // 판매자로 작성한 리뷰
-    through: Review, // 중간 테이블 이름
-    foreignKey: 'seller_id', // User 모델의 외래 키
-    otherKey: 'id', // 중간 테이블의 외래 키
+    through: Review,
+    as: 'SellerReviews',
+    foreignKey: 'seller_id',
 });
 
 User.belongsToMany(User, {
-    as: 'BuyerReviews', // 구매자로 작성한 리뷰
-    through: Review, // 중간 테이블 이름
-    foreignKey: 'buyer_id', // User 모델의 외래 키
-    otherKey: 'id', // 중간 테이블의 외래 키
+    through: Review,
+    as: 'BuyerReviews',
+    foreignKey: 'buyer_id',
 });
+
+Review.belongsTo(User, { foreignKey: 'seller_id', as: 'Seller' });
+Review.belongsTo(User, { foreignKey: 'buyer_id', as: 'Buyer' });
 
 // ChatRoom : ChatMessage = 1 : N
 // ChatRoom.hasMany(ChatMessage, {
