@@ -249,6 +249,23 @@ exports.mypageLike = async (req, res) => {
 // 마이페이지 채팅
 
 // 마이페이지 회원 정보 수정
+exports.userProfile = async (req, res) => {
+    const { userInfo } = req.session;
+    try {
+        if (userInfo) {
+            res.status(200).send({ result: true, data: userInfo });
+        } else {
+            res.status(400).send({
+                result: false,
+                message: '잘못된 접근입니다',
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ result: false, message: '서버 에러' });
+    }
+};
+// 마이페이지 회원 정보 수정 요청
 exports.updateUser = async (req, res) => {
     const data = req.body;
     console.log('data : ', data);
