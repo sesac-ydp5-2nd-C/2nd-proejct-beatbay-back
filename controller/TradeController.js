@@ -318,7 +318,7 @@ exports.updateStatus = async (req, res) => {
         const { type, update, id } = req.body;
 
         if (type == 0) {
-            const product = await UsedProduct.update(
+            await UsedProduct.update(
                 {
                     product_update: update,
                 },
@@ -329,7 +329,7 @@ exports.updateStatus = async (req, res) => {
 
             res.send({ update: 'product_update change success' });
         } else if (type == 1) {
-            const ability = await UsedAbility.update(
+            await UsedAbility.update(
                 {
                     ability_update: update,
                 },
