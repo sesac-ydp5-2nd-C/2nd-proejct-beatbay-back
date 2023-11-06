@@ -62,7 +62,7 @@ const User = (Sequelize, sequelize) => {
         {
             tableName: 'user',
             freezeTableName: true,
-            timestamps: true,
+            timestamps: false,
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         }
