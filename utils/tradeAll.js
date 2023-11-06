@@ -3,6 +3,7 @@ const {
     UsedAbility,
     sequelize,
     ProductFavorite,
+    User,
 } = require('../models');
 const Op = require('sequelize').Op;
 
@@ -166,12 +167,13 @@ const abilityAll = async (
             ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
             // 'createdAt',
             'updatedAt',
-            'user_id',
+            // 'user_id',
         ],
         order: [[sequelize.col(orderMethod), variation]],
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
+        include: { model: User },
     });
 
     let totalItemCount = Object.keys(abilities).length;

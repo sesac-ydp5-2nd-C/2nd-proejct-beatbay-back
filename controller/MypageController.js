@@ -85,7 +85,6 @@ exports.mypageReview = async (req, res) => {
         const review = await Review.findAll({
             where: { seller_id: data.id },
             // include: { model: User },
-            //user is not associated to review! 오류 발생
         });
 
         res.send({ review: review });

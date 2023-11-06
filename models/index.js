@@ -12,7 +12,7 @@ const sequelize = new Sequelize(
 );
 
 // 모델 모듈 불러오기
-const User = require('./User')(sequelize, Sequelize);
+const User = require('./User')(sequelize);
 const UserAuth = require('./UserAuth')(sequelize, Sequelize);
 const UsedProduct = require('./UsedProduct')(sequelize, Sequelize);
 const UsedAbility = require('./UsedAbility')(sequelize, Sequelize);
@@ -28,39 +28,44 @@ UserAuth.hasOne(User, {
     foreignKey: 'auth_id',
     sourceKey: 'auth_id',
 });
+User.belongsTo(UserAuth, { foreignKey: 'auth_id', targetKey: 'auth_id' });
 
 // User : UsedProduct = 1 : N
-User.hasMany(UsedProduct, { foreignKey: 'user_id', targetKey: 'user_id' });
-UsedProduct.belongsTo(User, { foreignKey: 'user_id', targetKey: 'user_id' });
+User.hasMany(UsedProduct, { foreignKey: 'user_id', sourceKey: 'id' });
+UsedProduct.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
 
 // User : UsedAbility = 1 : N
-User.hasMany(UsedAbility, { foreignKey: 'user_id', targetKey: 'user_id' });
-UsedAbility.belongsTo(User, { foreignKey: 'user_id', targetKey: 'user_id' });
+User.hasMany(UsedAbility, { foreignKey: 'user_id', sourceKey: 'id' });
+UsedAbility.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id' });
 
 // User : ProductFavorite = 1 : N
 User.hasMany(ProductFavorite, {
     foreignKey: 'user_id',
-    targetKey: 'user_id',
+    sourceKey: 'id',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 ProductFavorite.belongsTo(User, {
     foreignKey: 'user_id',
-    targetKey: 'user_id',
+    targetKey: 'id',
 });
 
 // UsedProduct : ProductFavorite = 1 : N
 UsedProduct.hasMany(ProductFavorite, {
     foreignKey: 'product_id',
-    targetKey: 'product_id',
+    sourceKey: 'product_id',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+});
+ProductFavorite.belongsTo(UsedProduct, {
+    foreignKey: 'product_id',
+    targetKey: 'product_id',
 });
 
 // User : AbilityFavorite = 1 : N
 User.hasMany(AbilityFavorite, {
     foreignKey: 'user_id',
-    targetKey: 'user_id',
+    sourceKey: 'id',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
@@ -69,13 +74,32 @@ AbilityFavorite.belongsTo(User, {
     targetKey: 'user_id',
 });
 
-// UsedAbility : AbilityFavorite = 1 : N
-UsedAbility.hasMany(AbilityFavorite, {
+// UsedAbility : AbilityFavorite = N : M
+UsedAbility.belongsToMany(UsedAbility, {
+    through: AbilityFavorite,
+    as: 'like',
     foreignKey: 'ability_id',
-    targetKey: 'ability_id',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
+UsedAbility.belongsToMany(UsedAbility, {
+    through: AbilityFavorite,
+    as: 'liked',
+    foreignKey: 'ability_id',
+});
+
+// UsedAbility.belongsToMany(UsedAbility, {
+//     through: AbilityFavorite,
+//     as: 'like',
+//     foreignKey: 'user_id',
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE',
+// });
+// UsedAbility.belongsToMany(UsedAbility, {
+//     through: AbilityFavorite,
+//     as: 'liked',
+//     foreignKey: 'user_id',
+// });
 
 // User : Follow = N : M
 // 같은 테이블끼리 다대다 관계 -> as로 구별 (JS 객체에서 사용할 이름)
@@ -91,15 +115,30 @@ User.belongsToMany(User, {
 });
 
 // User: Review = N : M
+// User.belongsToMany(User, {
+//     through: Review,
+//     as: 'Reviewings',
+//     foreignKey: 'seller_id',
+// });
+// User.belongsToMany(User, {
+//     through: Review,
+//     as: 'Reviewers',
+//     foreignKey: 'buyer_id',
+// });
+
+// User와 Review 간의 다대다 관계 설정
 User.belongsToMany(User, {
-    through: Review,
-    as: 'Reviewings',
-    foreignKey: 'seller_id',
+    as: 'SellerReviews', // 판매자로 작성한 리뷰
+    through: Review, // 중간 테이블 이름
+    foreignKey: 'seller_id', // User 모델의 외래 키
+    otherKey: 'id', // 중간 테이블의 외래 키
 });
+
 User.belongsToMany(User, {
-    through: Review,
-    as: 'Reviewers',
-    foreignKey: 'buyer_id',
+    as: 'BuyerReviews', // 구매자로 작성한 리뷰
+    through: Review, // 중간 테이블 이름
+    foreignKey: 'buyer_id', // User 모델의 외래 키
+    otherKey: 'id', // 중간 테이블의 외래 키
 });
 
 // ChatRoom : ChatMessage = 1 : N
