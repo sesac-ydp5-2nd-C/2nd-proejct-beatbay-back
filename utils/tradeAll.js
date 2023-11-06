@@ -85,8 +85,9 @@ const productAll = async (
     });
 
     let totalItemCount = Object.keys(products).length;
+    let totalPages = Math.ceil(totalItemCount / perPage);
 
-    return { products, pageNum, totalItemCount };
+    return { products, pageNum, totalPages };
 };
 
 const abilityAll = async (
@@ -170,8 +171,9 @@ const abilityAll = async (
     });
 
     let totalItemCount = Object.keys(abilities).length;
+    let totalPages = Math.ceil(totalItemCount / perPage);
 
-    return { abilities, pageNum, totalItemCount };
+    return { abilities, pageNum, totalPages };
 };
 
 module.exports = { productAll, abilityAll };
