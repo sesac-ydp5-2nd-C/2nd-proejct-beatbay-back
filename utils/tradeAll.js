@@ -1,4 +1,9 @@
-const { UsedProduct, UsedAbility, sequelize } = require('../models');
+const {
+    UsedProduct,
+    UsedAbility,
+    sequelize,
+    ProductFavorite,
+} = require('../models');
 const Op = require('sequelize').Op;
 
 const productAll = async (
@@ -54,7 +59,6 @@ const productAll = async (
             'product_price',
             'product_file_path',
             'product_count',
-            'product_like',
             'product_location',
             'product_status',
             'product_category',
@@ -82,6 +86,7 @@ const productAll = async (
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
+        // include: { model: ProductFavorite },ßß
     });
 
     let totalItemCount = Object.keys(products).length;
@@ -140,7 +145,6 @@ const abilityAll = async (
             'ability_price',
             'ability_file_path',
             'ability_count',
-            'ability_like',
             'ability_location',
             'ability_status',
             'ability_category',
