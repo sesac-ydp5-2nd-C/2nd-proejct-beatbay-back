@@ -66,7 +66,7 @@ exports.kakaoCallback = async (req, res) => {
         let kakaoUser;
         // 카카오는 비밀번호 사용할 일 없으니 임의값으로 암호화
         pw = bcryptPassword(userData.kakao_account.email);
-        if (idExists > 0) {
+        if (idExists) {
             kakaoUser = await User.update(
                 {
                     user_nickname: userData.properties.nickname,
