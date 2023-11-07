@@ -14,20 +14,24 @@ app.get('/', (req, res) => {
     res.send('채팅 서버 연결');
 });
 
+const users = [];
+
 io.sockets.on('connection', (socket) => {
     console.log('유저 접속됨');
-    console.log('소켓정보 : ', socket.data);
+
+    console.log('소켓정보id? : ', socket.id);
 
     socket.on('newUser', async (name) => {
         // console.log(name.email + '입장');
 
-        const user = name.email;
-        console.log(user + '입장');
+        // const user = name.email;
+        // console.log(user + '입장');
         try {
             const userData = await User.findOne({
-                where: { user_id: user },
+                where: { user_id: name.email },
             });
-            console.log('접속한 유저 데이터 : ', userData);
+            users.push({ id: userData.id, socketId: socket.id });
+            console.log('접속 중인 유저: ', users);
         } catch (err) {
             console.log(err);
         }
@@ -40,13 +44,12 @@ io.sockets.on('connection', (socket) => {
         });
     });
 
-    socket.on('message', async (data, callback) => {
-        data.name = socket.name;
+    socket.on('sendMessage', async (data, callback) => {
         const chatInput = await ChatMessage.create({
             chat_room_id: 1,
             sender_id: 1,
             receiver_id: 2,
-            content: data.message,
+            content: data.content,
             sent_at: new Date(),
         });
 
@@ -64,6 +67,8 @@ io.sockets.on('connection', (socket) => {
             name: 'SERVER',
             message: socket.name + '님이 나갔음',
         });
+        // 연결 해제한 유저 리스트에서 제거
+        users.splice(users.indexOf(socket), 1);
     });
 });
 
