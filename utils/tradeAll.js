@@ -48,9 +48,7 @@ const productAll = async (
     if (userId > 0) {
         whereCondition.user_id = userId;
     }
-
-    console.log('>>> 정렬 방법', order);
-    console.log('>>> 오름차순', variation);
+    console.log('id>>>>', userId);
 
     const products = await UsedProduct.findAll({
         attributes: [
@@ -87,7 +85,7 @@ const productAll = async (
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
-        // include: { model: ProductFavorite },ßß
+        // include: { model: ProductFavorite },
     });
 
     let totalItemCount = Object.keys(products).length;
