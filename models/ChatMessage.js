@@ -17,10 +17,6 @@ const ChatMessage = (Sequelize, sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            receiver_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
             content: {
                 type: DataTypes.STRING,
                 allowNull: false,
