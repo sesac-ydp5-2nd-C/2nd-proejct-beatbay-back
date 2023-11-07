@@ -10,7 +10,7 @@ const ChatMessage = (Sequelize, sequelize) => {
                 autoIncrement: true,
             },
             chat_room_id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.BIGINT,
                 allowNull: false,
             },
             sender_id: {
