@@ -82,7 +82,7 @@ exports.idCheck = async (req, res) => {
                 message: '가입 가능한 아이디 입니다.',
             });
         } else {
-            res.status(400).send({
+            res.status(401).send({
                 result: false,
                 message: '이미 존재하는 아이디 입니다.',
             });
@@ -176,7 +176,7 @@ exports.emailCheck = async (req, res) => {
                 message: '인증번호가 일치합니다',
             });
         } else {
-            res.status(400).send({
+            res.status(401).send({
                 result: false,
                 message: '인증번호를 확인하세요',
             });
@@ -210,7 +210,7 @@ exports.postFindPass = async (req, res) => {
             });
         }
         pw = bcryptPassword(newPass);
-        if (req.body.emailCode === req.session.emailCode) {
+        if (req.body.emailCode == req.session.emailCode) {
             const updatePw = await User.update(
                 {
                     user_pw: pw,
