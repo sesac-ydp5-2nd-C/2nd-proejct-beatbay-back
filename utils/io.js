@@ -1,4 +1,4 @@
-const { ChatMessage, sequelize } = require('../models');
+const { ChatMessage, User, sequelize } = require('../models');
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -16,9 +16,21 @@ app.get('/', (req, res) => {
 
 io.sockets.on('connection', (socket) => {
     console.log('유저 접속됨');
+    console.log('소켓정보 : ', socket.data);
 
-    socket.on('newUser', (name) => {
-        console.log(name + '입장');
+    socket.on('newUser', async (name) => {
+        // console.log(name.email + '입장');
+
+        const user = name.email;
+        console.log(user + '입장');
+        try {
+            const userData = await User.findOne({
+                where: { user_id: user },
+            });
+            console.log('접속한 유저 데이터 : ', userData);
+        } catch (err) {
+            console.log(err);
+        }
 
         socket.name = name;
         io.sockets.emit('update: ', {
