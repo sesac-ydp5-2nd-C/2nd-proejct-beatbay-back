@@ -78,7 +78,7 @@ const abilityOne = async (ability_id) => {
             ], // 생성일자 로딩 시, 년,월,일을 각각 받아올 수 있도록
             // 'createdAt',
             'updatedAt',
-            'user.user_id',
+            'user_id',
         ],
         where: ability_id,
         include: [{ model: User }],

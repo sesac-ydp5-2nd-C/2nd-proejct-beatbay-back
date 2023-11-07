@@ -84,8 +84,7 @@ exports.mypageReview = async (req, res) => {
 
         const review = await Review.findAll({
             where: { seller_id: data.id },
-            // include: { model: User },
-            //user is not associated to review! 오류 발생
+            include: { model: User, as: 'Buyer' },
         });
 
         res.send({ review: review });
@@ -101,7 +100,7 @@ exports.mypageFollower = async (req, res) => {
 
         const follower = await Follow.findAll({
             where: { following_id: data.id },
-            // include: { model: User },
+            include: { model: User, as: 'Follower' },
         });
 
         res.send({ follower: follower });
@@ -117,7 +116,7 @@ exports.mypageFollowing = async (req, res) => {
 
         const following = await Follow.findAll({
             where: { follower_id: data.id },
-            // include: { model: User },
+            include: { model: User, as: 'Following' },
         });
 
         res.send({ following: following });
