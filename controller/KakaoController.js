@@ -49,15 +49,15 @@ exports.kakaoCallback = async (req, res) => {
             }
         );
         console.log('userResponse : ', userResponse);
-        const userData = userResponse.data;
+        const userInfo = userResponse.data;
 
         // 사용자 정보를 세션에 저장
-        req.session.userData = userData;
+        req.session.userInfo = userInfo;
         req.session.token = accessToken;
 
         // 카카오 회원가입 로직
         const idExists = await User.findOne({
-            where: { user_id: userData.kakao_account.email },
+            where: { user_id: userInfo.kakao_account.email },
         });
 
         console.log('카카오 정정보보: ', idExists);
@@ -65,26 +65,26 @@ exports.kakaoCallback = async (req, res) => {
         // 동일한 아이디(이메일)이 존재하면 해당 아이디 정보 업데이트
         let kakaoUser;
         // 카카오는 비밀번호 사용할 일 없으니 임의값으로 암호화
-        pw = bcryptPassword(userData.kakao_account.email);
+        pw = bcryptPassword(userInfo.kakao_account.email);
         if (idExists) {
             kakaoUser = await User.update(
                 {
-                    user_nickname: userData.properties.nickname,
-                    user_profile_img: userData.properties.profile_image,
+                    user_nickname: userInfo.properties.nickname,
+                    user_profile_img: userInfo.properties.profile_image,
                     is_kakao: true,
                 },
                 {
-                    where: { user_id: userData.kakao_account.email },
+                    where: { user_id: userInfo.kakao_account.email },
                 }
             );
         } else {
             kakaoUser = await User.create({
-                user_id: userData.kakao_account.email,
+                user_id: userInfo.kakao_account.email,
                 user_pw: pw,
-                user_nickname: userData.properties.nickname,
+                user_nickname: userInfo.properties.nickname,
                 user_grade: 0,
                 auth_id: 0,
-                user_profile_img: userData.properties.profile_image,
+                user_profile_img: userInfo.properties.profile_image,
                 is_kakao: true,
             });
         }
@@ -100,27 +100,20 @@ exports.kakaoCallback = async (req, res) => {
             userInterest: idExists.user_interest,
             isKakao: idExists.is_kakao,
         };
-
-        if (kakaoUser) {
-            res.status(200).send({
-                result: true,
-                message: '카카오 로그인 성공',
-            });
-        } else {
-            res.status(400).send({
-                result: false,
-                message: '카카오 로그인 실패',
-            });
-        }
-        // 로그인이 완료되면 원하는 페이지로 리다이렉트 추후 추가
+        console.log('로그인 직전 : ', req.session);
     } catch (err) {
-        console.log('kakao login error !! : ', err);
+        console.log('Kakao login error: ', err);
+        return res.status(500).send({
+            result: false,
+            message: '카카오 로그인 실패',
+        });
     }
+    res.redirect('http://localhost:3000');
 };
 
 exports.kakaoLogout = async (req, res) => {
     try {
-        req.session.userData = '';
+        req.session.userInfo = '';
         const token = req.session.token;
 
         if (token) {

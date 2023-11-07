@@ -53,7 +53,7 @@ app.use((req, res, next) => {
     res.locals.isKakao = 0;
     if (req.session.userInfo) {
         const userInfo = req.session.userInfo;
-        res.locals.sessinId = userInfo.sessionId;
+        res.locals.sessionId = userInfo.sessionId;
         res.locals.id = userInfo.id;
         res.locals.userId = userInfo.userId;
         res.locals.userNickname = userInfo.userNickname;
