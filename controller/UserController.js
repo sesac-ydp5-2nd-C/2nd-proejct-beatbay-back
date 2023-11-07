@@ -144,7 +144,7 @@ exports.userLogout = async (req, res) => {
                 console.log(err);
                 return;
             }
-            res.redirect('/'); // 로그아웃 후 홈으로 이동
+            res.redirect('http://localhost:3000'); // 로그아웃 후 홈으로 이동
         });
         console.log('로그아웃 성공.');
     } catch (err) {
