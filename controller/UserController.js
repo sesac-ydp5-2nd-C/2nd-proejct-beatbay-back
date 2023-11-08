@@ -56,7 +56,7 @@ exports.signupUser = async (req, res) => {
                 auth_id: 1, // 유저 권한 데이터 의견 조율 후 수정
                 is_kakao: false, // 일반 유저 가입이므로 false
             });
-            res.send(signupUser);
+            res.send({ result: true, data: signupUser });
             console.log('result : ', signupUser);
         } else {
             res.send('인증번호를 확인하세요');
