@@ -120,10 +120,26 @@ ChatMessage.belongsTo(ChatRoom, { foreignKey: 'chat_room_id' });
 
 // // UsedProduct : ChatRoom = 1 : N
 UsedProduct.hasMany(ChatRoom, {
-    foreignKey: 'pro_abil_id',
-    targetKey: 'product_id',
+    foreignKey: 'product_id',
+    sourceKey: 'product_id',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+});
+ChatRoom.belongsTo(UsedProduct, {
+    foreignKey: 'product_id',
+    targetKey: 'product_id',
+});
+
+// UsedAbility : ChatRoom = 1 : N
+UsedAbility.hasMany(ChatRoom, {
+    foreignKey: 'ability_id',
+    sourceKey: 'ability_id',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+ChatRoom.belongsTo(UsedAbility, {
+    foreignKey: 'ability_id',
+    targetKey: 'ability_id',
 });
 
 User.belongsToMany(User, {
@@ -135,25 +151,6 @@ User.belongsToMany(User, {
     through: ChatRoom,
     as: 'User_2',
     foreignKey: 'user_id_2',
-});
-
-User.belongsToMany(User, {
-    through: ChatMessage,
-    as: 'Sender',
-    foreignKey: 'sender_id',
-});
-User.belongsToMany(User, {
-    through: ChatMessage,
-    as: 'Receiver',
-    foreignKey: 'receiver_id',
-});
-
-// UsedAbility : ChatRoom = 1 : N
-UsedAbility.hasMany(ChatRoom, {
-    foreignKey: 'pro_abil_id',
-    targetKey: 'ability_id',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
 });
 
 // 모델 db 객체에 저장
