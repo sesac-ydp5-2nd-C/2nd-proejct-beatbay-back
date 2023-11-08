@@ -77,16 +77,20 @@ io.sockets.on('connection', (socket) => {
         try {
             const roomCheck = await ChatRoom.findOne({
                 where: {
-                    // 입장시 게시물ID, 작성자ID, 발신자ID가 존재하는지 확인
                     [Op.and]: [
-                        { product_id: data.object_id },
-                        { user_id_1: data.receiver_id },
-                        { user_id_2: data.user_id },
-                    ],
-                    // 자기가 작성한 글일경우 채팅방 생성 X
-                    [Op.and]: [
-                        { product_id: data.object_id },
-                        { user_id_1: data.receiver_id },
+                        {
+                            [Op.and]: [
+                                { product_id: data.object_id },
+                                { user_id_1: data.receiver_id },
+                                { user_id_2: data.user_id },
+                            ],
+                        },
+                        {
+                            [Op.and]: [
+                                { product_id: data.object_id },
+                                { user_id_1: data.receiver_id },
+                            ],
+                        },
                     ],
                 },
             });
@@ -137,6 +141,15 @@ io.sockets.on('connection', (socket) => {
             socket.broadcast.emit('update', data);
 
             callback();
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    socket.on('enter', async (data) => {
+        console.log('click data : ', data);
+        try {
+            const selectRoom = ChatRoom.findOne({});
         } catch (err) {
             console.log(err);
         }
