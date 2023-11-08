@@ -74,32 +74,17 @@ AbilityFavorite.belongsTo(User, {
     targetKey: 'user_id',
 });
 
-// UsedAbility : AbilityFavorite = N : M
-UsedAbility.belongsToMany(UsedAbility, {
-    through: AbilityFavorite,
-    as: 'like',
+// UsedAbility : AbilityFavorite = 1 : N
+UsedAbility.hasMany(AbilityFavorite, {
     foreignKey: 'ability_id',
+    sourceKey: 'ability_id',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
-UsedAbility.belongsToMany(UsedAbility, {
-    through: AbilityFavorite,
-    as: 'liked',
+AbilityFavorite.belongsTo(UsedAbility, {
     foreignKey: 'ability_id',
+    targetKey: 'ability_id',
 });
-
-// UsedAbility.belongsToMany(UsedAbility, {
-//     through: AbilityFavorite,
-//     as: 'like',
-//     foreignKey: 'user_id',
-//     onDelete: 'CASCADE',
-//     onUpdate: 'CASCADE',
-// });
-// UsedAbility.belongsToMany(UsedAbility, {
-//     through: AbilityFavorite,
-//     as: 'liked',
-//     foreignKey: 'user_id',
-// });
 
 // User : Follow = N : M
 // 같은 테이블끼리 다대다 관계 -> as로 구별 (JS 객체에서 사용할 이름)
@@ -117,18 +102,9 @@ User.belongsToMany(User, {
 Follow.belongsTo(User, { foreignKey: 'follower_id', as: 'Follower' });
 Follow.belongsTo(User, { foreignKey: 'following_id', as: 'Following' });
 
-// User: Review = N : M
-User.belongsToMany(User, {
-    through: Review,
-    as: 'SellerReviews',
-    foreignKey: 'seller_id',
-});
-
-User.belongsToMany(User, {
-    through: Review,
-    as: 'BuyerReviews',
-    foreignKey: 'buyer_id',
-});
+// User: Review = 1 : M (다대다 관계일 경우, unique key 문제로 불가함)
+User.hasMany(Review, { foreignKey: 'seller_id', as: 'SellerReviews' });
+User.hasMany(Review, { foreignKey: 'buyer_id', as: 'BuyerReviews' });
 
 Review.belongsTo(User, { foreignKey: 'seller_id', as: 'Seller' });
 Review.belongsTo(User, { foreignKey: 'buyer_id', as: 'Buyer' });
