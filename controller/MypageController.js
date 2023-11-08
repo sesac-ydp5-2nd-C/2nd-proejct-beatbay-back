@@ -201,21 +201,9 @@ exports.mypageLike = async (req, res) => {
     try {
         if (data) {
             if (type == 0) {
-                // const productFavorite = await userData.getData(
-                //     ProductFavorite,
-                //     'user_id',
-                //     data.id
-                // );
-
                 const productFavorite = await ProductFavorite.findAll({
                     where: { user_id: data.id },
-                    // include: {
-                    //     model: UsedProduct,
-                    //     where: {
-                    //         product_id: ProductFavorite.product_id,
-                    //     },
-                    // },
-                    // used_product is not associated to product_favorite!
+                    include: { model: UsedProduct },
                 });
 
                 res.status(200).send({
@@ -223,11 +211,10 @@ exports.mypageLike = async (req, res) => {
                     userFavoriteProduct: productFavorite,
                 });
             } else if (type == 1) {
-                const abilityFavorite = await userData.getData(
-                    AbilityFavorite,
-                    'user_id',
-                    data.id
-                );
+                const abilityFavorite = await AbilityFavorite.findAll({
+                    where: { user_id: data.id },
+                    include: { model: UsedAbility },
+                });
 
                 res.status(200).send({
                     result: 'mypage like',

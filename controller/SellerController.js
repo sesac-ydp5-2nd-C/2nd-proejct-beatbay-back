@@ -148,10 +148,10 @@ exports.follower = async (req, res) => {
 // 판매자 리뷰
 exports.review = async (req, res) => {
     try {
-        const { id } = req.query;
+        const { seller_id } = req.query;
 
         const review = await Review.findAll({
-            where: { seller_id: id },
+            where: { seller_id },
             include: { model: User, as: 'Buyer' },
         });
 
