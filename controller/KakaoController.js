@@ -83,7 +83,7 @@ exports.kakaoCallback = async (req, res) => {
                 user_pw: pw,
                 user_nickname: userInfo.properties.nickname,
                 user_grade: 0,
-                auth_id: 0,
+                auth_id: 1,
                 user_profile_img: userInfo.properties.profile_image,
                 is_kakao: true,
             });
@@ -91,6 +91,7 @@ exports.kakaoCallback = async (req, res) => {
         // 카카오 정보 세션에 담기
         req.session.userInfo = {
             sessionId: req.sessionID,
+            id: idExists.id,
             userId: idExists.user_id,
             userNickname: idExists.user_nickname,
             userGrade: idExists.user_grade,
@@ -103,6 +104,8 @@ exports.kakaoCallback = async (req, res) => {
         console.log('로그인 직전 : ', req.session);
     } catch (err) {
         console.log('Kakao login error: ', err);
+        req.session.userInfo = '';
+        req.session.token = '';
         return res.status(500).send({
             result: false,
             message: '카카오 로그인 실패',
