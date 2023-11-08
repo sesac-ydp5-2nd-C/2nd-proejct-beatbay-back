@@ -23,7 +23,24 @@ app.get('/', (req, res) => {
 const users = [];
 let userRooms;
 
+// 소켓 채팅방 설정
+// const productRoom = io.of('/product');
+// const abilityRoom = io.of('/ability');
+
+// productRoom.on('connection', (socket) => {
+//     console.log('중고물품 채팅방');
+
+//     socket.on('disconnection', () => {
+//         console.log('중고물품 채팅방에서 유저 아웃');
+//     });
+// });
+
 io.sockets.on('connection', (socket) => {
+    const req = socket.request;
+    const {
+        headers: { referer },
+    } = req;
+    console.log('요청 url : ', req.headers.referer);
     console.log('접속 된 유저 socketId : ', socket.id);
 
     socket.on('newUser', async (name) => {
@@ -70,7 +87,6 @@ io.sockets.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('sssss : ', socket);
         socket.broadcast.emit('update', {
             type: 'disconnect',
             name: 'SERVER',
