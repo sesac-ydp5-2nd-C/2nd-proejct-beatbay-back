@@ -1,6 +1,6 @@
 const path = require('path');
 
-const checkFile = (files) => {
+const checkFiles = (files) => {
     let filePaths = [];
     let filePath = null;
     // 파일 정보 유무 확인
@@ -19,4 +19,15 @@ const checkFile = (files) => {
     return filePaths;
 };
 
-module.exports = { checkFile };
+const checkFile = (file) => {
+    let filePath = null;
+    // 파일 정보 유무 확인
+    if (file) {
+        const { destination, filename } = file;
+        filePath = destination.split(path.sep)[1] + path.sep + filename; // 파일명
+    }
+
+    return filePath;
+};
+
+module.exports = { checkFiles, checkFile };

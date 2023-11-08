@@ -1,7 +1,7 @@
 const { productAll, abilityAll } = require('../utils/tradeAll');
 const { productOne, abilityOne } = require('../utils/tradeDetail');
 const { productCreate, abilityCreate } = require('../utils/sellCreate');
-const { checkFile } = require('../utils/fileUtil');
+const { checkFiles } = require('../utils/fileUtil');
 const { productUpdate, abilityUpdate } = require('../utils/sellUpdate');
 const CountFunc = require('../utils/myPageUitls');
 
@@ -11,6 +11,7 @@ const {
     ProductFavorite,
     AbilityFavorite,
     sequelize,
+    Follow,
 } = require('../models');
 const Op = require('sequelize').Op;
 
@@ -105,24 +106,8 @@ exports.tradeDetailProduct = async (req, res) => {
     try {
         let { product_id } = req.query;
         product_id = parseInt(product_id);
-        let isLike; // 좋아요 여부
-
-        // 좋아요 여부 isLike에 넣어서 알려주기
-        const data = req.session.userInfo;
-        if (data) {
-            let status = await ProductFavorite.findOne({
-                where: { product_id, user_id: data.id },
-            });
-
-            if (status) {
-                isLike = 1;
-            } else {
-                isLike = 0;
-            }
-        } else {
-            // 비회원일경우
-            isLike = 0;
-        }
+        let isLike = 0; // 좋아요 여부
+        let isFollow = 0; // 팔로우 여부
 
         // 조회수 증가
         await UsedProduct.increment(
@@ -139,7 +124,30 @@ exports.tradeDetailProduct = async (req, res) => {
 
         let product = await productOne(product_id);
 
-        res.send({ product: product, isLike, likeCount });
+        // 좋아요 여부 isLike에 넣어서 알려주기, 팔로우 여부 isFollow에 넣어서 알려주기
+        const data = req.session.userInfo;
+        if (data) {
+            let likeStatus = await ProductFavorite.findOne({
+                where: { product_id, user_id: data.id },
+            });
+
+            let followStatus = await Follow.findOne({
+                where: { follower_id: data.id, following_id: product.user_id },
+            });
+
+            if (likeStatus) {
+                isLike = 1;
+            }
+            if (followStatus) {
+                isFollow = 1;
+            }
+        }
+
+        if (product) {
+            res.send({ product: product, isLike, likeCount, isFollow });
+        } else {
+            res.status(404).send({ error: '존재하지 않는 물품입니다.' });
+        }
     } catch (err) {
         console.log(err);
     }
@@ -180,23 +188,25 @@ exports.tradeDetailAbility = async (req, res) => {
         let { ability_id } = req.query;
         ability_id = parseInt(ability_id);
 
-        let isLike; // 좋아요 여부
+        let isLike = 0; // 좋아요 여부
 
-        // 좋아요 여부 isLike에 넣어서 알려주기
+        // 좋아요 여부 isLike에 넣어서 알려주기, 팔로우 여부 isFollow에 넣어서 알려주기
         const data = req.session.userInfo;
         if (data) {
             let status = await AbilityFavorite.findOne({
                 where: { ability_id, user_id: data.id },
             });
 
+            let followStatus = await Follow.findOne({
+                where: { follower_id: data.id, following_id: ability.user_id },
+            });
+
             if (status) {
                 isLike = 1;
-            } else {
-                isLike = 0;
             }
-        } else {
-            // 비회원일경우
-            isLike = 0;
+            if (followStatus) {
+                isFollow = 1;
+            }
         }
 
         // 조회수 증가
@@ -214,7 +224,11 @@ exports.tradeDetailAbility = async (req, res) => {
 
         let ability = await abilityOne(ability_id);
 
-        res.send({ ability: ability, isLike, likeCount });
+        if (ability) {
+            res.send({ ability: ability, isLike, likeCount, isFollow });
+        } else {
+            res.status(404).send({ error: '존재하지 않는 재능입니다.' });
+        }
     } catch (err) {
         console.log(err);
     }
@@ -382,7 +396,7 @@ exports.postTrade = async (req, res) => {
     console.log(req.files);
     try {
         // 파일 유무 확인
-        const filePaths = checkFile(req.files);
+        const filePaths = checkFiles(req.files);
         console.log(req.files.path);
 
         // type : 물품 / 재능

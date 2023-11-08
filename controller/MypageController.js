@@ -9,6 +9,7 @@ const {
 } = require('../models');
 const userData = require('../utils/myPageUitls');
 const { productAll, abilityAll } = require('../utils/tradeAll');
+const { checkFile } = require('../utils/fileUtil');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
@@ -202,7 +203,7 @@ exports.mypageBuy = async (req, res) => {
 
         if (data) {
             if (type == 0) {
-                let { update, page } = req.query;
+                let { page } = req.query;
 
                 update = parseInt(update);
 
@@ -213,7 +214,7 @@ exports.mypageBuy = async (req, res) => {
                     0, // 전체 소분류
                     '', // 검색어 없음
                     page,
-                    update,
+                    0,
                     0,
                     data.id
                 );
@@ -233,7 +234,7 @@ exports.mypageBuy = async (req, res) => {
                     0, // 전체 소분류
                     '', // 검색어 없음
                     page,
-                    update,
+                    0,
                     0,
                     data.id
                 );
@@ -371,33 +372,20 @@ exports.postReview = async (req, res) => {
     }
 };
 
-// 마이페이지 회원 정보 수정
-exports.userProfile = async (req, res) => {
-    const { userInfo } = req.session;
-    try {
-        if (userInfo) {
-            res.status(200).send({ result: true, data: userInfo });
-        } else {
-            res.status(400).send({
-                result: false,
-                message: '잘못된 접근입니다',
-            });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({ result: false, message: '서버 에러' });
-    }
-};
 // 마이페이지 회원 정보 수정 요청
 exports.updateUser = async (req, res) => {
     const data = req.body;
     console.log('data : ', data);
     try {
+        const filePath = checkFile(req.file);
+        console.log(req.file);
+
         const updateUser = await User.update(
             {
                 user_nickname: data.userNickname,
                 user_comment: data.userComment,
                 user_interest: data.userInterest,
+                user_profile_img: filePath,
             },
             {
                 where: { user_id: data.userId },
@@ -416,6 +404,7 @@ exports.updateUser = async (req, res) => {
             });
         }
     } catch (err) {
+        console.log(err);
         res.status(500).send({
             result: false,
             message: '서버 에러',
