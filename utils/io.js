@@ -6,6 +6,7 @@ const {
     UsedProduct,
     sequelize,
 } = require('../models');
+const { Op } = require('sequelize');
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -71,19 +72,74 @@ io.sockets.on('connection', (socket) => {
         }
     });
 
-    socket.on('sendMessage', async (data, callback) => {
-        const chatInput = await ChatMessage.create({
-            chat_room_id: 1,
-            sender_id: data.user_id,
-            content: data.content,
-            sent_at: new Date(),
-        });
+    socket.on('join', async (data, callback) => {
+        console.log('#####: ', data);
+        try {
+            const roomCheck = await ChatRoom.findOne({
+                where: {
+                    // 입장시 게시물ID, 작성자ID, 발신자ID가 존재하는지 확인
+                    [Op.and]: [
+                        { product_id: data.object_id },
+                        { user_id_1: data.receiver_id },
+                        { user_id_2: data.user_id },
+                    ],
+                    // 자기가 작성한 글일경우 채팅방 생성 X
+                    [Op.and]: [
+                        { product_id: data.object_id },
+                        { user_id_1: data.receiver_id },
+                    ],
+                },
+            });
+            console.log('roomCheck : ', roomCheck);
+            if (!roomCheck) {
+                if (data.type === 'product') {
+                    const productInfo = await UsedProduct.findOne({
+                        where: { product_id: data.object_id },
+                    });
+                    console.log(productInfo);
+                    const chatRoom = await ChatRoom.create({
+                        product_id: data.object_id, // 게시물 ID
+                        pro_abil_img: productInfo.product_file_path, // 게시물 이미지
+                        user_id_1: data.receiver_id, // 판매자
+                        user_id_2: data.user_id, // 구매자
+                    });
+                    console.log('중고물품 채팅방 생성');
+                } else if (data.type === 'ability') {
+                    const abilityInfo = await UsedAbility.findOne({
+                        where: { ability_id: data.object_id },
+                    });
+                    console.log(abilityInfo);
+                    const chatRoom = await ChatRoom.create({
+                        ability_id: data.object_id,
+                        pro_abil_img: abilityInfo.ability_file_path,
+                        user_id_1: data.user_id,
+                        user_id_2: data.receiver_id,
+                    });
+                    console.log('재능 채팅방 생성');
+                    const chatInput = await ChatMessage.create({
+                        chat_room_id: roomCheck.id,
+                        sender_id: data.user_id,
+                        content: data.content,
+                        sent_at: new Date(),
+                    });
+                    console.log('메세지 전송');
+                }
+            } else {
+                const chatInput = await ChatMessage.create({
+                    chat_room_id: roomCheck.id,
+                    sender_id: data.user_id,
+                    content: data.content,
+                    sent_at: new Date(),
+                });
+            }
+            console.log('messageData : ', data);
+            // io.to(socket.id).emit('message', data.content);
+            socket.broadcast.emit('update', data);
 
-        console.log('messageData : ', data);
-        // io.to(socket.id).emit('message', data.content);
-        socket.broadcast.emit('update', data);
-
-        callback();
+            callback();
+        } catch (err) {
+            console.log(err);
+        }
     });
 
     socket.on('disconnect', () => {
