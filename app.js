@@ -95,6 +95,10 @@ app.use('/trade', tradeRouter);
 const noticeRouter = require('./routes/notice');
 app.use('/notice', noticeRouter);
 
+// 관리자
+const adminRouter = require('./routes/admin');
+app.use('/admin', adminRouter);
+
 app.get('*', (req, res) => {
     res.send('404');
 });
