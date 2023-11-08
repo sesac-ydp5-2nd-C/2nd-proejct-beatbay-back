@@ -70,7 +70,7 @@ exports.kakaoCallback = async (req, res) => {
             kakaoUser = await User.update(
                 {
                     user_nickname: userInfo.properties.nickname,
-                    user_profile_img: userInfo.properties.profile_image,
+                    user_profile_img: '',
                     is_kakao: true,
                 },
                 {
@@ -84,14 +84,14 @@ exports.kakaoCallback = async (req, res) => {
                 user_nickname: userInfo.properties.nickname,
                 user_grade: 0,
                 auth_id: 1,
-                user_profile_img: userInfo.properties.profile_image,
+                user_profile_img: '',
                 is_kakao: true,
             });
         }
         // 카카오 정보 세션에 담기
         req.session.userInfo = {
             sessionId: req.sessionID,
-            id: idExists.id,
+            id: idExists?.id,
             userId: idExists.user_id,
             userNickname: idExists.user_nickname,
             userGrade: idExists.user_grade,
