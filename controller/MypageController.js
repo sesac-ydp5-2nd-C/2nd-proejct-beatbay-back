@@ -127,10 +127,14 @@ exports.mypageFollowing = async (req, res) => {
 
 // 마이페이지 판매
 exports.mypageSell = async (req, res) => {
-    const data = req.session.userInfo;
-    let { type } = req.query;
-
     try {
+        const data = req.session.userInfo;
+        let { type } = req.query;
+
+        const user = await User.findOne({
+            where: { user_id: data.userId },
+        });
+
         if (data) {
             if (type == 0) {
                 let { update, page } = req.query;
@@ -150,6 +154,7 @@ exports.mypageSell = async (req, res) => {
 
                 res.status(200).send({
                     result: 'mypage sell',
+                    userData: user,
                     userProduct: userProduct,
                 });
             } else if (type == 1) {
@@ -170,6 +175,7 @@ exports.mypageSell = async (req, res) => {
 
                 res.status(200).send({
                     result: 'mypage sell',
+                    userData: user,
                     userAbility: userAbility,
                 });
             }
@@ -187,7 +193,58 @@ exports.mypageSell = async (req, res) => {
 // 마이페이지 구매
 exports.mypageBuy = async (req, res) => {
     try {
-        res.send('mypage buy');
+        const data = req.session.userInfo;
+        let { type } = req.query;
+
+        const user = await User.findOne({
+            where: { user_id: data.userId },
+        });
+
+        if (data) {
+            if (type == 0) {
+                let { update, page } = req.query;
+
+                update = parseInt(update);
+
+                let userProduct = await productAll(
+                    'DESC', // 내림차순
+                    'used_product.createdAt', // 최신순
+                    0, // 전체 대분류
+                    0, // 전체 소분류
+                    '', // 검색어 없음
+                    page,
+                    update,
+                    0,
+                    data.id
+                );
+
+                res.status(200).send({
+                    result: 'mypage buy',
+                    userData: user,
+                    userProduct: userProduct,
+                });
+            } else if (type == 1) {
+                let { update, page } = req.query;
+
+                let userAbility = await abilityAll(
+                    'DESC', // 내림차순
+                    'used_ability.createdAt', // 최신순
+                    0, // 전체 대분류
+                    0, // 전체 소분류
+                    '', // 검색어 없음
+                    page,
+                    update,
+                    0,
+                    data.id
+                );
+
+                res.status(200).send({
+                    result: 'mypage buy',
+                    userData: user,
+                    userAbility: userAbility,
+                });
+            }
+        }
     } catch (err) {
         console.log(err);
     }
@@ -195,29 +252,69 @@ exports.mypageBuy = async (req, res) => {
 
 // 마이페이지 찜
 exports.mypageLike = async (req, res) => {
-    const data = req.session.userInfo;
-    let { type } = req.query;
-
     try {
+        const data = req.session.userInfo;
+        let { type, update, page } = req.query;
+        const whereCondition = {};
+        const perPage = 15; // 페이지 당 항목 수
+
+        const user = await User.findOne({
+            where: { user_id: data.userId },
+        });
+
         if (data) {
             if (type == 0) {
+                let pageNum = page || 1;
+
+                if (update > 0) {
+                    whereCondition.product_update = update;
+                }
+
                 const productFavorite = await ProductFavorite.findAll({
                     where: { user_id: data.id },
-                    include: { model: UsedProduct },
+                    include: {
+                        model: UsedProduct,
+                        where: whereCondition,
+                    },
+                    offset: (pageNum - 1) * perPage,
+                    limit: perPage,
                 });
+
+                let totalItemCount = Object.keys(productFavorite).length;
+                let totalPages = Math.ceil(totalItemCount / perPage);
 
                 res.status(200).send({
                     result: 'mypage like',
+                    userData: user,
+                    totalItemCount,
+                    totalPages,
                     userFavoriteProduct: productFavorite,
                 });
             } else if (type == 1) {
+                let pageNum = page || 1;
+
+                if (update > 0) {
+                    whereCondition.product_update = update;
+                }
+
                 const abilityFavorite = await AbilityFavorite.findAll({
                     where: { user_id: data.id },
-                    include: { model: UsedAbility },
+                    include: {
+                        model: UsedAbility,
+                        where: whereCondition,
+                    },
+                    offset: (pageNum - 1) * perPage,
+                    limit: perPage,
                 });
+
+                let totalItemCount = Object.keys(abilityFavorite).length;
+                let totalPages = Math.ceil(totalItemCount / perPage);
 
                 res.status(200).send({
                     result: 'mypage like',
+                    userData: user,
+                    totalItemCount,
+                    totalPages,
                     userFavoriteAbility: abilityFavorite,
                 });
             }

@@ -70,7 +70,7 @@ const UsedProduct = (Sequelize, sequelize) => {
                     '물품 거래 상태(0: 전체, 1: 판매 중, 2: 예약 중, 3: 거래 완료)',
             },
             product_customer_id: {
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER,
                 allowNull: true,
                 comment: '제품 구매자 ID',
             },

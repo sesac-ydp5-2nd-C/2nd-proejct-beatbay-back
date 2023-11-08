@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const {
     UsedProduct,
     UsedAbility,
@@ -15,7 +16,8 @@ const productAll = async (
     searchKeyword,
     page,
     update,
-    userId
+    userId,
+    customerId
 ) => {
     const whereCondition = {};
 
@@ -48,7 +50,10 @@ const productAll = async (
     if (userId > 0) {
         whereCondition.user_id = userId;
     }
-    console.log('id>>>>', userId);
+
+    if (customerId > 0) {
+        whereCondition.product_customer_id = customerId;
+    }
 
     const products = await UsedProduct.findAll({
         attributes: [
@@ -85,7 +90,6 @@ const productAll = async (
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
-        // include: { model: ProductFavorite },
     });
 
     let totalItemCount = Object.keys(products).length;
@@ -102,7 +106,8 @@ const abilityAll = async (
     searchKeyword,
     page,
     update,
-    userId
+    userId,
+    customerId
 ) => {
     const whereCondition = {};
 
@@ -134,6 +139,10 @@ const abilityAll = async (
 
     if (userId > 0) {
         whereCondition.user_id = userId;
+    }
+
+    if (customerId > 0) {
+        whereCondition.ability_customer_id = customerId;
     }
 
     const abilities = await UsedAbility.findAll({
@@ -171,7 +180,6 @@ const abilityAll = async (
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
-        include: { model: User },
     });
 
     let totalItemCount = Object.keys(abilities).length;
