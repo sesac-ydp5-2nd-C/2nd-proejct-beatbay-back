@@ -104,7 +104,7 @@ const productAll = async (
 
 const abilityAll = async (
     variation,
-    orderMethod,
+    order,
     categoryNum,
     subCategoryNum,
     searchKeyword,
@@ -180,7 +180,7 @@ const abilityAll = async (
             'updatedAt',
             // 'user_id',
         ],
-        order: [[sequelize.col(orderMethod), variation]],
+        order: [[sequelize.col(order), variation]],
         where: whereCondition, // 들어오는 카테고리 값에 따른 조건
         offset: (pageNum - 1) * perPage,
         limit: perPage,
@@ -190,6 +190,7 @@ const abilityAll = async (
         order: [[sequelize.col(order), variation]],
         where: whereCondition,
     });
+
     let totalPages = Math.ceil(totalItemCount / perPage);
 
     return { abilities, pageNum, totalPages };
