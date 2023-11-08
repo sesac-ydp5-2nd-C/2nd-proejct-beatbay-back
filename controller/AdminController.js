@@ -33,3 +33,16 @@ exports.gradeChange = async (req, res) => {
         console.log(err);
     }
 };
+
+// 회원 삭제
+exports.userDelete = async (req, res) => {
+    try {
+        const { user_id } = req.body;
+
+        await User.destroy({ where: { id: user_id } });
+
+        res.send({ delete: 'success' });
+    } catch (err) {
+        console.log(err);
+    }
+};
