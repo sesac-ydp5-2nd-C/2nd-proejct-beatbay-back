@@ -281,11 +281,11 @@ exports.mypageLike = async (req, res) => {
                     limit: perPage,
                 });
 
-                let totalItemCount = await productFavorite.count({
-                    where: { use_id: data.id },
+                let totalItemCount = await ProductFavorite.count({
+                    where: { user_id: data.id },
                     include: {
                         model: UsedProduct,
-                        whre: whereCondition,
+                        where: whereCondition,
                     },
                 });
 
@@ -315,7 +315,7 @@ exports.mypageLike = async (req, res) => {
                     limit: perPage,
                 });
 
-                let totalItemCount = abilityFavorite.count({
+                let totalItemCount = AbilityFavorite.count({
                     where: { user_id: data.id },
                     include: {
                         model: UsedAbility,
