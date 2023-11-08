@@ -9,6 +9,12 @@ router.get('/', controller.adminMain);
 router.patch('/grade', controller.gradeChange);
 
 // 회원 삭제
-router.delete('/delete', controller.userDelete);
+router.delete('/userDelete', controller.userDelete);
+
+// 물품 삭제
+router.delete('/productDelete', controller.productDelete);
+
+// 재능 삭제
+router.delete('/abilityDelete', controller.abilityDelete);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, UsedProduct, UsedAbility } = require('../models');
 
 // 관리자 메인
 exports.adminMain = async (req, res) => {
@@ -10,7 +10,26 @@ exports.adminMain = async (req, res) => {
         });
         const userCount = await User.count();
 
-        res.send({ users, userCount });
+        // 물품 관리
+        const products = await UsedProduct.findAll({
+            attributes: ['product_id', 'product_title'],
+        });
+        const productCount = await UsedProduct.count();
+
+        // 재능 관리
+        const abilities = await UsedAbility.findAll({
+            attributes: ['ability_id', 'ability_title'],
+        });
+        const abilityCount = await UsedAbility.count();
+
+        res.send({
+            users,
+            userCount,
+            products,
+            productCount,
+            abilities,
+            abilityCount,
+        });
     } catch (err) {
         console.log(err);
     }
@@ -41,7 +60,33 @@ exports.userDelete = async (req, res) => {
 
         await User.destroy({ where: { id: user_id } });
 
-        res.send({ delete: 'success' });
+        res.send({ userDelete: 'success' });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 물품 삭제
+exports.productDelete = async (req, res) => {
+    try {
+        const { product_id } = req.body;
+
+        await UsedProduct.destroy({ where: { product_id } });
+
+        res.send({ productDelete: 'success' });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+// 재능 삭제
+exports.abilityDelete = async (req, res) => {
+    try {
+        const { ability_id } = req.body;
+
+        await UsedAbility.destroy({ where: { ability_id } });
+
+        res.send({ abilityDelete: 'success' });
     } catch (err) {
         console.log(err);
     }
