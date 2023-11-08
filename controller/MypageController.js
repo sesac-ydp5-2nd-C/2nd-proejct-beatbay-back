@@ -330,6 +330,46 @@ exports.mypageLike = async (req, res) => {
 };
 
 // 마이페이지 채팅
+// 리뷰 작성
+exports.postReview = async (req, res) => {
+    try {
+        const buyer_id = req.session.userInfo.id;
+        const { review_content, seller_id, type, id } = req.body;
+
+        const dealEnd = 3;
+
+        const review = await Review.create({
+            seller_id,
+            buyer_id,
+            review_content,
+        });
+
+        // customer_id 추가, 거래 상태 변경
+        if (type == 0) {
+            await UsedProduct.update(
+                {
+                    product_customer_id: buyer_id,
+                    product_update: dealEnd,
+                },
+                { where: { product_id: id } }
+            );
+
+            res.send({ review, addId: 'product' });
+        } else if (type == 1) {
+            await UsedAbility.update(
+                {
+                    ability_customer_id: buyer_id,
+                    ability_update: dealEnd,
+                },
+                { where: { ability_id: id } }
+            );
+
+            res.send({ review, addId: 'ability' });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 // 마이페이지 회원 정보 수정
 exports.userProfile = async (req, res) => {
