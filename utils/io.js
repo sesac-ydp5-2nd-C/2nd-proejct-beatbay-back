@@ -45,9 +45,6 @@ io.sockets.on('connection', (socket) => {
     console.log('접속 된 유저 socketId : ', socket.id);
 
     socket.on('newUser', async (name) => {
-        // console.log(name.email + '입장');
-
-        // const user = name.email;
         console.log('name: ', name);
         try {
             const userData = await User.findOne({
@@ -57,16 +54,15 @@ io.sockets.on('connection', (socket) => {
             console.log('접속 중인 유저: ', users);
 
             userRooms = await ChatRoom.findAll({
-                where: { id: userData.id },
+                where: {
+                    [Op.or]: [
+                        { user_id_1: userData.id },
+                        { user_id_2: userData.id },
+                    ],
+                },
             });
             io.to(socket.id).emit('room_List', userRooms);
-            console.log('userRooms:', userRooms);
-
-            // io.sockets.emit('update: ', {
-            //     type: 'connect',
-            //     name: 'SERVER',
-            //     message: userData.user_nickname + '님이 접속',
-            // });
+            console.log('접속한 유저가 참여중인 채팅방:', userRooms);
         } catch (err) {
             console.log(err);
         }
