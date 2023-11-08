@@ -187,9 +187,23 @@ exports.tradeDetailAbility = async (req, res) => {
     try {
         let { ability_id } = req.query;
         ability_id = parseInt(ability_id);
-
         let isLike = 0; // 좋아요 여부
         let isFollow = 0;
+
+        // 조회수 증가
+        await UsedAbility.increment(
+            { ability_count: 1 },
+            { where: { ability_id: ability_id } }
+        );
+
+        // 좋아요 갯수
+        let likeCount = await CountFunc.getCount(
+            AbilityFavorite,
+            'ability_id',
+            ability_id
+        );
+
+        let ability = await abilityOne(ability_id);
 
         // 좋아요 여부 isLike에 넣어서 알려주기, 팔로우 여부 isFollow에 넣어서 알려주기
         const data = req.session.userInfo;
@@ -209,21 +223,6 @@ exports.tradeDetailAbility = async (req, res) => {
                 isFollow = 1;
             }
         }
-
-        // 조회수 증가
-        await UsedAbility.increment(
-            { ability_count: 1 },
-            { where: { ability_id: ability_id } }
-        );
-
-        // 좋아요 갯수
-        let likeCount = await CountFunc.getCount(
-            AbilityFavorite,
-            'ability_id',
-            ability_id
-        );
-
-        let ability = await abilityOne(ability_id);
 
         if (ability) {
             res.send({ ability: ability, isLike, likeCount, isFollow });

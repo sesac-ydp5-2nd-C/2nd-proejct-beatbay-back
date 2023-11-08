@@ -302,7 +302,7 @@ exports.mypageLike = async (req, res) => {
                 let pageNum = page || 1;
 
                 if (update > 0) {
-                    whereCondition.product_update = update;
+                    whereCondition.ability_update = update;
                 }
 
                 const abilityFavorite = await AbilityFavorite.findAll({
@@ -315,13 +315,14 @@ exports.mypageLike = async (req, res) => {
                     limit: perPage,
                 });
 
-                let totalItemCount = AbilityFavorite.count({
+                let totalItemCount = await AbilityFavorite.count({
                     where: { user_id: data.id },
                     include: {
                         model: UsedAbility,
                         where: whereCondition,
                     },
                 });
+
                 let totalPages = Math.ceil(totalItemCount / perPage);
 
                 res.status(200).send({
