@@ -91,6 +91,7 @@ exports.kakaoCallback = async (req, res) => {
         // 카카오 정보 세션에 담기
         req.session.userInfo = {
             sessionId: req.sessionID,
+            id: idExists.id,
             userId: idExists.user_id,
             userNickname: idExists.user_nickname,
             userGrade: idExists.user_grade,
