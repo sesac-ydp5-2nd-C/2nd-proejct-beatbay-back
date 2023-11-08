@@ -13,7 +13,7 @@ const { productAll, abilityAll } = require('../utils/tradeAll');
 // 판매자 메인
 exports.sellerMain = async (req, res) => {
     try {
-        const { seller_id, type } = req.query; // 판매자 계정 id(pri), product/ability
+        const { seller_id, type, update } = req.query;
         let isFollow = false; // 팔로우 여부
 
         // 회원 정보
@@ -57,7 +57,6 @@ exports.sellerMain = async (req, res) => {
         const subCategoryNum = 0;
         const searchKeyword = '';
         const page = 1;
-        const update = 0;
 
         if (type == 0) {
             order = 'used_product.createdAt';
