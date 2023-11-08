@@ -281,13 +281,20 @@ exports.mypageLike = async (req, res) => {
                     limit: perPage,
                 });
 
-                let totalItemCount = Object.keys(productFavorite).length;
+                let totalItemCount = await productFavorite.count({
+                    where: { use_id: data.id },
+                    include: {
+                        model: UsedProduct,
+                        whre: whereCondition,
+                    },
+                });
+
                 let totalPages = Math.ceil(totalItemCount / perPage);
 
                 res.status(200).send({
                     result: 'mypage like',
                     userData: user,
-                    totalItemCount,
+                    pageNum,
                     totalPages,
                     userFavoriteProduct: productFavorite,
                 });
@@ -308,13 +315,19 @@ exports.mypageLike = async (req, res) => {
                     limit: perPage,
                 });
 
-                let totalItemCount = Object.keys(abilityFavorite).length;
+                let totalItemCount = abilityFavorite.count({
+                    where: { user_id: data.id },
+                    include: {
+                        model: UsedAbility,
+                        where: whereCondition,
+                    },
+                });
                 let totalPages = Math.ceil(totalItemCount / perPage);
 
                 res.status(200).send({
                     result: 'mypage like',
                     userData: user,
-                    totalItemCount,
+                    pageNum,
                     totalPages,
                     userFavoriteAbility: abilityFavorite,
                 });

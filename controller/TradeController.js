@@ -189,6 +189,7 @@ exports.tradeDetailAbility = async (req, res) => {
         ability_id = parseInt(ability_id);
 
         let isLike = 0; // 좋아요 여부
+        let isFollow = 0;
 
         // 좋아요 여부 isLike에 넣어서 알려주기, 팔로우 여부 isFollow에 넣어서 알려주기
         const data = req.session.userInfo;
