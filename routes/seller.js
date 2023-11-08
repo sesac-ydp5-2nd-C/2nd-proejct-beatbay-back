@@ -11,7 +11,7 @@ router.patch('/follow', controller.follow);
 // 팔로우 목록
 router.get('/follower', controller.follower);
 
-// 리뷰
+// 리뷰 목록
 router.get('/sellerReview', controller.review);
 
 module.exports = router;
