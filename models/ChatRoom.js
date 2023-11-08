@@ -11,11 +11,11 @@ const ChatRoom = (Sequelize, sequelize) => {
             },
             product_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
             },
             ability_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
             },
             pro_abil_img: {
                 type: DataTypes.STRING,

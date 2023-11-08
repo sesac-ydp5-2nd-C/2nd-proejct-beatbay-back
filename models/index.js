@@ -152,6 +152,8 @@ User.belongsToMany(User, {
     as: 'User_2',
     foreignKey: 'user_id_2',
 });
+ChatRoom.belongsTo(User, { foreignKey: 'user_id_1', as: 'User_1' });
+ChatRoom.belongsTo(User, { foreignKey: 'user_id_2', as: 'User_2' });
 
 // 모델 db 객체에 저장
 db.User = User;
