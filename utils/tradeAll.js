@@ -92,7 +92,11 @@ const productAll = async (
         limit: perPage,
     });
 
-    let totalItemCount = Object.keys(products).length;
+    const totalItemCount = await UsedProduct.count({
+        order: [[sequelize.col(order), variation]],
+        where: whereCondition,
+    });
+
     let totalPages = Math.ceil(totalItemCount / perPage);
 
     return { products, pageNum, totalPages };
@@ -182,7 +186,10 @@ const abilityAll = async (
         limit: perPage,
     });
 
-    let totalItemCount = Object.keys(abilities).length;
+    const totalItemCount = await UsedAbility.count({
+        order: [[sequelize.col(order), variation]],
+        where: whereCondition,
+    });
     let totalPages = Math.ceil(totalItemCount / perPage);
 
     return { abilities, pageNum, totalPages };
