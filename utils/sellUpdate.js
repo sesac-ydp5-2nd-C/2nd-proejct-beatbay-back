@@ -10,7 +10,7 @@ const productUpdate = async (
     method,
     location,
     update,
-    file_paths,
+    // file_paths,
     product_id
 ) => {
     const product = await UsedProduct.update(
@@ -24,7 +24,7 @@ const productUpdate = async (
             product_status: status,
             product_method: method,
             product_update: update,
-            product_file_path: file_paths,
+            // product_file_path: file_paths,
         },
         {
             where: {
@@ -46,7 +46,7 @@ const abilityUpdate = async (
     method,
     location,
     update,
-    file_paths,
+    // file_paths,
     ability_id
 ) => {
     const ability = await UsedAbility.update(
@@ -60,7 +60,7 @@ const abilityUpdate = async (
             ability_status: status,
             ability_method: method,
             ability_update: update,
-            ability_file_path: file_paths,
+            // ability_file_path: file_paths,
         },
         {
             where: {

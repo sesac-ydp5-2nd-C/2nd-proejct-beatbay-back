@@ -99,6 +99,7 @@ exports.idCheck = async (req, res) => {
 exports.userLogin = async (req, res) => {
     try {
         const { userId, userPw } = req.body;
+        console.log('>>>> 유저', userId, userPw);
         const login = await User.findOne({
             where: { user_id: userId },
         });
