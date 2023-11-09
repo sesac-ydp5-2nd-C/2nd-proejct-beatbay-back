@@ -51,9 +51,12 @@ io.sockets.on('connection', (socket) => {
                     ],
                 },
             });
+            console.log('chatRoom', userRoomsCheck);
             for (const chatRoom of userRoomsCheck) {
                 const user1 = chatRoom.user_id_1;
                 const user2 = chatRoom.user_id_2;
+                const productId = chatRoom.product_id;
+                const abilityId = chatRoom.ability_id;
 
                 // console.log('lastMessage : ', lsatMessage.content);
                 if (user1) {
@@ -63,22 +66,35 @@ io.sockets.on('connection', (socket) => {
                     const user2Info = await User.findOne({
                         where: { id: user2 },
                     });
-                    const lsatMessage = await ChatMessage.findOne({
+                    const lastMessage = await ChatMessage.findOne({
                         where: { chat_room_id: chatRoom.id },
                         limit: 1,
                         order: [['sent_at', 'DESC']],
                     });
 
-                    const lastMessageContent = lsatMessage
-                        ? lsatMessage.content
+                    const lastMessageContent = lastMessage
+                        ? lastMessage.content
                         : null;
 
-                    roomInfo = {
+                    const roomInfo = {
                         room_id: chatRoom.id,
                         user_1: user1Info,
                         user_2: user2Info,
                         last_message: lastMessageContent,
                     };
+                    if (productId) {
+                        const productInfo = await UsedProduct.findOne({
+                            where: { product_id: chatRoom.product_id },
+                        });
+                        roomInfo.product_info = productInfo;
+                    } else if (abilityId) {
+                        // Ability 정보 가져오기
+                        const abilityInfo = await UsedAbility.findOne({
+                            where: { ability_id: chatRoom.ability_id },
+                        });
+                        roomInfo.ability_info = abilityInfo;
+                    }
+
                     userRooms.push(roomInfo);
                 }
             }
@@ -188,7 +204,7 @@ io.sockets.on('connection', (socket) => {
             console.log('[join] data', data);
             io.to(socket.id).emit('message', data);
 
-            callback();
+            callback(data.room_id);
         } catch (err) {
             console.log(err);
         }
