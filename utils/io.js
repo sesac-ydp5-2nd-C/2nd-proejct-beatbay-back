@@ -163,10 +163,6 @@ io.sockets.on('connection', (socket) => {
         }
     });
 
-    socket.on('sendMessage', (data) => {
-        console.log('전송이벤트 : ', data);
-    });
-
     socket.on('enter', async (data) => {
         let roomData = [];
         let enterRoomInfo = {};
@@ -204,6 +200,17 @@ io.sockets.on('connection', (socket) => {
             console.log(err);
         }
         io.to(socket.id).emit('roomData', roomData);
+    });
+
+    socket.on('sendMessage', async (data) => {
+        console.log('전송이벤트 : ', data);
+        // const chatInput = await ChatMessage.create({
+        //     chat_room_id: roomId,
+        //     sender_id: data.user_id,
+        //     content: data.content,
+        //     sent_at: new Date(),
+        // });
+        io.to(socket.id).emit('message', data);
     });
 
     socket.on('disconnect', () => {

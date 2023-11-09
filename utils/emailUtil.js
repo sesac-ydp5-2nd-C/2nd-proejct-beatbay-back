@@ -21,7 +21,7 @@ const emailUtil = {
         await mail.sendMail({
             from: process.env.EMAIL_ADDRESS,
             to: email,
-            subject: `이메일 테스트.`,
+            subject: `Beatbay 인증 메일 입니다.`,
             html:
                 message +
                 `<p>아래의 인증번호를 입력하여 인증을 완료해주세요.</p>` +
