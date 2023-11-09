@@ -142,6 +142,10 @@ io.sockets.on('connection', (socket) => {
         }
     });
 
+    socket.on('sendMessage', (data) => {
+        console.log('전송이벤트 : ', data);
+    });
+
     socket.on('enter', async (data) => {
         console.log('click data : ', data);
         try {
