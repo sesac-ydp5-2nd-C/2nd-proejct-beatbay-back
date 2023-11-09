@@ -91,7 +91,7 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('join', async (data, callback) => {
         console.log('#####: ', data);
-        let roomInfo = {};
+        // let roomInfo = {};
 
         try {
             const roomCheck = await ChatRoom.findOne({
@@ -161,13 +161,14 @@ io.sockets.on('connection', (socket) => {
                     sent_at: new Date(),
                 });
             }
-            roomInfo.room_id = roomCheck.id;
-            roomInfo.my_id = data.user_id;
-            roomInfo.message_List = messageList;
-            console.log('[join] roomInfo 객체 값: ', roomInfo);
-            console.log('[join] messageData : ', data);
-            io.to(socket.id).emit('room_List', roomInfo);
+            // roomInfo.room_id = roomCheck.id;
+            // roomInfo.my_id = data.user_id;
+            // roomInfo.message_List = messageList;
+            // console.log('[join] roomInfo 객체 값: ', roomInfo);
+            // console.log('[join] messageData : ', data);
+            // io.to(socket.id).emit('roomData', roomInfo);
             // socket.broadcast.emit('update', data);
+            io.to(socket.id).emit('message', data);
 
             callback();
         } catch (err) {
