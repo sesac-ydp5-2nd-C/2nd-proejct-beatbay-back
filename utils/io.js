@@ -16,26 +16,12 @@ const io = require('socket.io')(http, {
     },
 });
 
+// 접속 한 유저 리스트
+const users = [];
+
 app.get('/', (req, res) => {
     res.send('채팅 서버 연결');
 });
-
-// 접속 한 유저 리스트
-const users = [];
-let userRooms = [];
-let roomInfo = {};
-
-// 소켓 채팅방 설정
-// const productRoom = io.of('/product');
-// const abilityRoom = io.of('/ability');
-
-// productRoom.on('connection', (socket) => {
-//     console.log('중고물품 채팅방');
-
-//     socket.on('disconnection', () => {
-//         console.log('중고물품 채팅방에서 유저 아웃');
-//     });
-// });
 
 io.sockets.on('connection', (socket) => {
     const req = socket.request;
@@ -46,6 +32,8 @@ io.sockets.on('connection', (socket) => {
     console.log('접속 된 유저 socketId : ', socket.id);
 
     socket.on('newUser', async (name) => {
+        let userRooms = [];
+        let roomInfo = {};
         console.log('name: ', name);
         try {
             const userData = await User.findOne({
@@ -54,7 +42,8 @@ io.sockets.on('connection', (socket) => {
             users.push({ id: userData.id, socketId: socket.id });
             console.log('접속 중인 유저: ', users);
 
-            userRooms = await ChatRoom.findAll({
+            // 사용유저가 존재하는 방 조회
+            const userRoomsCheck = await ChatRoom.findAll({
                 where: {
                     [Op.or]: [
                         { user_id_1: userData.id },
@@ -62,23 +51,37 @@ io.sockets.on('connection', (socket) => {
                     ],
                 },
             });
-            for (const chatRoom of userRooms) {
+            for (const chatRoom of userRoomsCheck) {
                 const user1 = chatRoom.user_id_1;
                 const user2 = chatRoom.user_id_2;
-                console.log('채팅방 ID:', chatRoom.id);
-                const user1Info = await User.findOne({
-                    where: { id: user1 },
-                });
-                const user2Info = await User.findOne({
-                    where: { id: user2 },
-                });
-                roomInfo = {
-                    room_id: chatRoom.id,
-                    user_1: user1Info,
-                    user_2: user2Info,
-                };
+
+                // console.log('lastMessage : ', lsatMessage.content);
+                if (user1) {
+                    const user1Info = await User.findOne({
+                        where: { id: user1 },
+                    });
+                    const user2Info = await User.findOne({
+                        where: { id: user2 },
+                    });
+                    const lsatMessage = await ChatMessage.findOne({
+                        where: { chat_room_id: chatRoom.id },
+                        limit: 1,
+                        order: [['sent_at', 'DESC']],
+                    });
+
+                    const lastMessageContent = lsatMessage
+                        ? lsatMessage.content
+                        : null;
+
+                    roomInfo = {
+                        room_id: chatRoom.id,
+                        user_1: user1Info,
+                        user_2: user2Info,
+                        last_message: lastMessageContent,
+                    };
+                    userRooms.push(roomInfo);
+                }
             }
-            userRooms.push(roomInfo);
             io.to(socket.id).emit('room_List', userRooms);
             console.log('접속한 유저가 참여중인 채팅방:', userRooms);
         } catch (err) {
