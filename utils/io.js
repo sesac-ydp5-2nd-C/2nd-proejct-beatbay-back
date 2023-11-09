@@ -40,7 +40,7 @@ io.sockets.on('connection', (socket) => {
                 where: { user_id: name.email },
             });
             users.push({ id: userData.id, socketId: socket.id });
-            console.log('접속 중인 유저: ', users);
+            console.log('[newUser] 접속 중인 유저: ', users);
 
             // 사용유저가 존재하는 방 조회
             const userRoomsCheck = await ChatRoom.findAll({
@@ -83,7 +83,7 @@ io.sockets.on('connection', (socket) => {
                 }
             }
             io.to(socket.id).emit('room_List', userRooms);
-            console.log('접속한 유저가 참여중인 채팅방:', userRooms);
+            console.log('[newUser] 접속한 유저가 참여중인 채팅방:', userRooms);
         } catch (err) {
             console.log(err);
         }
@@ -91,6 +91,8 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('join', async (data, callback) => {
         console.log('#####: ', data);
+        let roomInfo = {};
+
         try {
             const roomCheck = await ChatRoom.findOne({
                 where: {
@@ -111,7 +113,13 @@ io.sockets.on('connection', (socket) => {
                     ],
                 },
             });
-            console.log('roomCheck : ', roomCheck);
+            console.log('[join] roomCheck : ', roomCheck);
+
+            const messageList = await ChatMessage.findAll({
+                where: { chat_room_id: roomCheck.id },
+            });
+            console.log('[join] 방안에 메세지 정보 : ', messageList);
+
             if (!roomCheck) {
                 if (data.type === 'product') {
                     const productInfo = await UsedProduct.findOne({
@@ -124,7 +132,7 @@ io.sockets.on('connection', (socket) => {
                         user_id_1: data.receiver_id, // 판매자
                         user_id_2: data.user_id, // 구매자
                     });
-                    console.log('중고물품 채팅방 생성');
+                    console.log('[join] 중고물품 채팅방 생성');
                 } else if (data.type === 'ability') {
                     const abilityInfo = await UsedAbility.findOne({
                         where: { ability_id: data.object_id },
@@ -136,14 +144,14 @@ io.sockets.on('connection', (socket) => {
                         user_id_1: data.receiver_id,
                         user_id_2: data.user_id,
                     });
-                    console.log('재능 채팅방 생성');
+                    console.log('[join] 재능 채팅방 생성');
                     const chatInput = await ChatMessage.create({
                         chat_room_id: roomCheck.id,
                         sender_id: data.user_id,
                         content: data.content,
                         sent_at: new Date(),
                     });
-                    console.log('메세지 전송');
+                    console.log('[join] 메세지 전송');
                 }
             } else {
                 const chatInput = await ChatMessage.create({
@@ -153,9 +161,13 @@ io.sockets.on('connection', (socket) => {
                     sent_at: new Date(),
                 });
             }
-            console.log('messageData : ', data);
-            // io.to(socket.id).emit('message', data.content);
-            socket.broadcast.emit('update', data);
+            roomInfo.room_id = roomCheck.id;
+            roomInfo.my_id = data.user_id;
+            roomInfo.message_List = messageList;
+            console.log('[join] roomInfo 객체 값: ', roomInfo);
+            console.log('[join] messageData : ', data);
+            io.to(socket.id).emit('room_List', roomInfo);
+            // socket.broadcast.emit('update', data);
 
             callback();
         } catch (err) {
@@ -173,23 +185,23 @@ io.sockets.on('connection', (socket) => {
             const selectRoom = await ChatRoom.findOne({
                 where: { id: roomId },
             });
-            console.log('선택된 방:', selectRoom);
+            console.log('[enter] 선택된 방:', selectRoom);
             const messageList = await ChatMessage.findAll({
                 where: { chat_room_id: roomId },
             });
-            console.log('방안에 메세지 정보 : ', messageList);
+            console.log('[enter] 방안에 메세지 정보 : ', messageList);
             // 선택된 방에서 물건 채팅인지, 재능 거래 채팅인지 구분을 위한 조건문
             if (!selectRoom.ability_id) {
                 const productData = await UsedProduct.findOne({
                     where: { product_id: selectRoom.product_id },
                 });
-                console.log('물건 거래 상품정보 : ', productData);
+                console.log('[enter] 물건 거래 상품정보 : ', productData);
                 enterRoomInfo.productInfo = productData;
             } else {
                 const abilityData = await UsedAbility.findOne({
                     where: { ability_id: selectRoom.ability_id },
                 });
-                console.log('재능 거래 상품정보 : ', abilityData);
+                console.log('[enter] 재능 거래 상품정보 : ', abilityData);
                 enterRoomInfo.productInfo = abilityData;
             }
             enterRoomInfo.room_id = roomId;
