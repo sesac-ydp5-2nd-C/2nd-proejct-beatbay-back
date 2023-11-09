@@ -92,7 +92,7 @@ io.sockets.on('connection', (socket) => {
     socket.on('join', async (data, callback) => {
         console.log('#####: ', data);
         // let roomInfo = {};
-
+        let roomId;
         try {
             const roomCheck = await ChatRoom.findOne({
                 where: {
@@ -113,12 +113,8 @@ io.sockets.on('connection', (socket) => {
                     ],
                 },
             });
-            console.log('[join] roomCheck : ', roomCheck);
 
-            const messageList = await ChatMessage.findAll({
-                where: { chat_room_id: roomCheck.id },
-            });
-            console.log('[join] 방안에 메세지 정보 : ', messageList);
+            console.log('[join] roomCheck : ', roomCheck);
 
             if (!roomCheck) {
                 if (data.type === 'product') {
@@ -132,7 +128,23 @@ io.sockets.on('connection', (socket) => {
                         user_id_1: data.receiver_id, // 판매자
                         user_id_2: data.user_id, // 구매자
                     });
+                    roomId = await ChatRoom.findOne({
+                        where: {
+                            product_id: data.object_id,
+                            pro_abil_img: productInfo.product_file_path,
+                            user_id_1: data.receiver_id,
+                            user_id_2: data.user_id,
+                        },
+                    });
+                    data.room_id = roomId.id;
+                    console.log('씨발 !', data.room_id);
                     console.log('[join] 중고물품 채팅방 생성');
+                    const chatInput = await ChatMessage.create({
+                        chat_room_id: roomId.id,
+                        sender_id: data.user_id,
+                        content: data.content,
+                        sent_at: new Date(),
+                    });
                 } else if (data.type === 'ability') {
                     const abilityInfo = await UsedAbility.findOne({
                         where: { ability_id: data.object_id },
@@ -144,9 +156,19 @@ io.sockets.on('connection', (socket) => {
                         user_id_1: data.receiver_id,
                         user_id_2: data.user_id,
                     });
+                    roomId = await ChatRoom.findOne({
+                        where: {
+                            ability_id: data.object_id,
+                            pro_abil_img: abilityInfo.ability_file_path,
+                            user_id_1: data.receiver_id,
+                            user_id_2: data.user_id,
+                        },
+                    });
+                    console.log('[join] 방정보', roomId.id);
+                    data.room_id = roomId.id;
                     console.log('[join] 재능 채팅방 생성');
                     const chatInput = await ChatMessage.create({
-                        chat_room_id: roomCheck.id,
+                        chat_room_id: roomId.id,
                         sender_id: data.user_id,
                         content: data.content,
                         sent_at: new Date(),
@@ -160,9 +182,9 @@ io.sockets.on('connection', (socket) => {
                     content: data.content,
                     sent_at: new Date(),
                 });
+                data.room_id = roomCheck.id;
             }
 
-            data.room_id = roomCheck.id;
             console.log('[join] data', data);
             io.to(socket.id).emit('message', data);
 
