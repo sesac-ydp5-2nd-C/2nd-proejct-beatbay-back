@@ -215,13 +215,14 @@ io.sockets.on('connection', (socket) => {
     });
 
     socket.on('sendMessage', async (data) => {
-        console.log('전송이벤트 : ', data);
-        // const chatInput = await ChatMessage.create({
-        //     chat_room_id: roomId,
-        //     sender_id: data.user_id,
-        //     content: data.content,
-        //     sent_at: new Date(),
-        // });
+        console.log('[sendMessage] 전송이벤트 : ', data);
+        const chatInput = await ChatMessage.create({
+            chat_room_id: data.room_id,
+            sender_id: data.user_id,
+            content: data.content,
+            sent_at: new Date(),
+        });
+        console.log('[sendMessage] : ', chatInput);
         io.to(socket.id).emit('message', data);
     });
 
