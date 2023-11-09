@@ -438,19 +438,32 @@ exports.updateUser = async (req, res) => {
 // 마이페이지 회원 정보 삭제
 exports.deleteUser = async (req, res) => {
     try {
-        const deleteUser = await User.destroy({
+        const { userPw } = req.body;
+
+        const user = await User.findOne({
             where: { id: req.session.userInfo.id },
         });
 
-        if (deleteUser) {
-            res.status(200).send({
-                result: true,
-                message: '회원 정보 삭제 성공',
+        if (compareFunc(userPw, user.user_pw)) {
+            const deleteUser = await User.destroy({
+                where: { id: req.session.userInfo.id },
             });
+
+            if (deleteUser) {
+                res.status(200).send({
+                    result: true,
+                    message: '회원 정보 삭제 성공',
+                });
+            } else {
+                res.status(400).send({
+                    result: false,
+                    massage: '잘못된 접근 입니다.',
+                });
+            }
         } else {
             res.status(400).send({
                 result: false,
-                massage: '잘못된 접근 입니다.',
+                massage: '비밀번호가 일치하지 않습니다.',
             });
         }
     } catch (err) {
