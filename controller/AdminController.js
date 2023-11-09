@@ -56,7 +56,7 @@ exports.gradeChange = async (req, res) => {
 // 회원 삭제
 exports.userDelete = async (req, res) => {
     try {
-        const { user_id } = req.body;
+        const { user_id } = req.query;
 
         await User.destroy({ where: { id: user_id } });
 
@@ -69,7 +69,7 @@ exports.userDelete = async (req, res) => {
 // 물품 삭제
 exports.productDelete = async (req, res) => {
     try {
-        const { product_id } = req.body;
+        const { product_id } = req.query;
 
         await UsedProduct.destroy({ where: { product_id } });
 
@@ -82,7 +82,7 @@ exports.productDelete = async (req, res) => {
 // 재능 삭제
 exports.abilityDelete = async (req, res) => {
     try {
-        const { ability_id } = req.body;
+        const { ability_id } = req.query;
 
         await UsedAbility.destroy({ where: { ability_id } });
 
