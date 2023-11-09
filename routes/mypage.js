@@ -81,7 +81,7 @@ router.get('/chat', chat.userChat);
 router.post('/review', controller.postReview);
 
 // 마이페이지 회원정보 수정
-router.put(
+router.patch(
     '/updateUser',
     uploadImg.single('uploadFiles'),
     controller.updateUser
