@@ -215,7 +215,7 @@ io.sockets.on('connection', (socket) => {
         io.to(socket.id).emit('roomData', roomData);
     });
 
-    socket.on('sendMessage', async (data) => {
+    socket.on('sendMessage', async (data, callback) => {
         console.log('[sendMessage] 전송이벤트 : ', data);
         const chatInput = await ChatMessage.create({
             chat_room_id: data.room_id,
@@ -225,6 +225,7 @@ io.sockets.on('connection', (socket) => {
         });
         console.log('[sendMessage] : ', chatInput);
         io.to(socket.id).emit('message', data);
+        callback();
     });
 
     socket.on('disconnect', () => {
