@@ -205,8 +205,6 @@ exports.mypageBuy = async (req, res) => {
             if (type == 0) {
                 let { page } = req.query;
 
-                update = parseInt(update);
-
                 let userProduct = await productAll(
                     'DESC', // 내림차순
                     'used_product.createdAt', // 최신순
@@ -225,7 +223,7 @@ exports.mypageBuy = async (req, res) => {
                     userProduct: userProduct,
                 });
             } else if (type == 1) {
-                let { update, page } = req.query;
+                let { page } = req.query;
 
                 let userAbility = await abilityAll(
                     'DESC', // 내림차순
@@ -430,8 +428,9 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const deleteUser = await User.destroy({
-            where: { user_id: req.body.userId },
+            where: { id: req.session.userInfo.id },
         });
+
         if (deleteUser) {
             res.status(200).send({
                 result: true,
