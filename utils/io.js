@@ -22,7 +22,8 @@ app.get('/', (req, res) => {
 
 // 접속 한 유저 리스트
 const users = [];
-let userRooms;
+let userRooms = [];
+let roomInfo = {};
 
 // 소켓 채팅방 설정
 // const productRoom = io.of('/product');
@@ -61,6 +62,23 @@ io.sockets.on('connection', (socket) => {
                     ],
                 },
             });
+            for (const chatRoom of userRooms) {
+                const user1 = chatRoom.user_id_1;
+                const user2 = chatRoom.user_id_2;
+                console.log('채팅방 ID:', chatRoom.id);
+                const user1Info = await User.findOne({
+                    where: { id: user1 },
+                });
+                const user2Info = await User.findOne({
+                    where: { id: user2 },
+                });
+                roomInfo = {
+                    room_id: chatRoom.id,
+                    user_1: user1Info,
+                    user_2: user2Info,
+                };
+            }
+            userRooms.push(roomInfo);
             io.to(socket.id).emit('room_List', userRooms);
             console.log('접속한 유저가 참여중인 채팅방:', userRooms);
         } catch (err) {
