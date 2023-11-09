@@ -54,7 +54,8 @@ io.sockets.on('connection', (socket) => {
             users.push({ id: userData.id, socketId: socket.id });
             console.log('접속 중인 유저: ', users);
 
-            userRooms = await ChatRoom.findAll({
+            // 사용유저가 존재하는 방 조회
+            const userRoomsCheck = await ChatRoom.findAll({
                 where: {
                     [Op.or]: [
                         { user_id_1: userData.id },
@@ -62,23 +63,26 @@ io.sockets.on('connection', (socket) => {
                     ],
                 },
             });
-            for (const chatRoom of userRooms) {
+            for (const chatRoom of userRoomsCheck) {
                 const user1 = chatRoom.user_id_1;
                 const user2 = chatRoom.user_id_2;
                 console.log('채팅방 ID:', chatRoom.id);
-                const user1Info = await User.findOne({
-                    where: { id: user1 },
-                });
-                const user2Info = await User.findOne({
-                    where: { id: user2 },
-                });
-                roomInfo = {
-                    room_id: chatRoom.id,
-                    user_1: user1Info,
-                    user_2: user2Info,
-                };
+                if (user1) {
+                    const user1Info = await User.findOne({
+                        where: { id: user1 },
+                    });
+                    const user2Info = await User.findOne({
+                        where: { id: user2 },
+                    });
+
+                    roomInfo = {
+                        room_id: chatRoom.id,
+                        user_1: user1Info,
+                        user_2: user2Info,
+                    };
+                    userRooms.push(roomInfo);
+                }
             }
-            userRooms.push(roomInfo);
             io.to(socket.id).emit('room_List', userRooms);
             console.log('접속한 유저가 참여중인 채팅방:', userRooms);
         } catch (err) {
