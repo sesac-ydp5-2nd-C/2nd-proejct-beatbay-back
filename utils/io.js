@@ -133,8 +133,8 @@ io.sockets.on('connection', (socket) => {
                     const chatRoom = await ChatRoom.create({
                         ability_id: data.object_id,
                         pro_abil_img: abilityInfo.ability_file_path,
-                        user_id_1: data.user_id,
-                        user_id_2: data.receiver_id,
+                        user_id_1: data.receiver_id,
+                        user_id_2: data.user_id,
                     });
                     console.log('재능 채팅방 생성');
                     const chatInput = await ChatMessage.create({
@@ -163,17 +163,54 @@ io.sockets.on('connection', (socket) => {
         }
     });
 
-    socket.on('sendMessage', (data) => {
-        console.log('전송이벤트 : ', data);
-    });
-
     socket.on('enter', async (data) => {
+        let roomData = [];
+        let enterRoomInfo = {};
         console.log('click data : ', data);
+        const roomId = data.room_id;
+
         try {
-            const selectRoom = ChatRoom.findOne({});
+            const selectRoom = await ChatRoom.findOne({
+                where: { id: roomId },
+            });
+            console.log('선택된 방:', selectRoom);
+            const messageList = await ChatMessage.findAll({
+                where: { chat_room_id: roomId },
+            });
+            console.log('방안에 메세지 정보 : ', messageList);
+            // 선택된 방에서 물건 채팅인지, 재능 거래 채팅인지 구분을 위한 조건문
+            if (!selectRoom.ability_id) {
+                const productData = await UsedProduct.findOne({
+                    where: { product_id: selectRoom.product_id },
+                });
+                console.log('물건 거래 상품정보 : ', productData);
+                enterRoomInfo.productInfo = productData;
+            } else {
+                const abilityData = await UsedAbility.findOne({
+                    where: { ability_id: selectRoom.ability_id },
+                });
+                console.log('재능 거래 상품정보 : ', abilityData);
+                enterRoomInfo.productInfo = abilityData;
+            }
+            enterRoomInfo.room_id = roomId;
+            enterRoomInfo.messageList = messageList;
+
+            roomData.push(enterRoomInfo);
         } catch (err) {
             console.log(err);
         }
+        io.to(socket.id).emit('roomData', roomData);
+    });
+
+    socket.on('sendMessage', async (data) => {
+        console.log('전송이벤트 : ', data);
+        // const chatInput = await ChatMessage.create({
+        //     chat_room_id: roomId,
+        //     sender_id: data.user_id,
+        //     content: data.content,
+        //     sent_at: new Date(),
+        // });
+        io.to(socket.id).emit('message', data);
     });
 
     socket.on('disconnect', () => {
