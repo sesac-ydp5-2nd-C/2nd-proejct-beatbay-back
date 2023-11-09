@@ -161,13 +161,9 @@ io.sockets.on('connection', (socket) => {
                     sent_at: new Date(),
                 });
             }
-            // roomInfo.room_id = roomCheck.id;
-            // roomInfo.my_id = data.user_id;
-            // roomInfo.message_List = messageList;
-            // console.log('[join] roomInfo 객체 값: ', roomInfo);
-            // console.log('[join] messageData : ', data);
-            // io.to(socket.id).emit('roomData', roomInfo);
-            // socket.broadcast.emit('update', data);
+
+            data.room_id = roomCheck.id;
+            console.log('[join] data', data);
             io.to(socket.id).emit('message', data);
 
             callback();
