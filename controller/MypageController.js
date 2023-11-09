@@ -428,8 +428,9 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const deleteUser = await User.destroy({
-            where: { user_id: req.body.userId },
+            where: { id: req.session.userInfo.id },
         });
+
         if (deleteUser) {
             res.status(200).send({
                 result: true,
