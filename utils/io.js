@@ -188,7 +188,7 @@ io.sockets.on('connection', (socket) => {
             console.log('[join] data', data);
             io.to(socket.id).emit('message', data);
 
-            callback();
+            callback(data.room_id);
         } catch (err) {
             console.log(err);
         }
@@ -243,6 +243,12 @@ io.sockets.on('connection', (socket) => {
         });
         console.log('[sendMessage] : ', chatInput);
         io.to(socket.id).emit('message', data);
+        users.forEach((e) => {
+            if (e.id == data.receiver_id) {
+                io.to(e.socketId).emit('message', data);
+            }
+        });
+
         callback();
     });
 
