@@ -10,6 +10,7 @@ const {
 const userData = require('../utils/myPageUitls');
 const { productAll, abilityAll } = require('../utils/tradeAll');
 const { checkFile } = require('../utils/fileUtil');
+const { bcryptPassword, compareFunc } = require('../utils/encrypt');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
@@ -386,33 +387,43 @@ exports.postReview = async (req, res) => {
 
 // 마이페이지 회원 정보 수정 요청
 exports.updateUser = async (req, res) => {
-    const data = req.body;
-    console.log('data : ', data);
     try {
+        const { userNickname, userComment, userInterest, userId, userPw } =
+            req.body;
         const filePath = checkFile(req.file);
-        console.log(req.file);
 
-        const updateUser = await User.update(
-            {
-                user_nickname: data.userNickname,
-                user_comment: data.userComment,
-                user_interest: data.userInterest,
-                user_profile_img: filePath,
-            },
-            {
-                where: { user_id: data.userId },
+        const user = await User.findOne({
+            where: { user_id: userId },
+        });
+
+        if (compareFunc(userPw, user.user_pw)) {
+            const updateUser = await User.update(
+                {
+                    user_nickname: userNickname,
+                    user_comment: userComment,
+                    user_interest: userInterest,
+                    user_profile_img: filePath,
+                },
+                {
+                    where: { user_id: userId },
+                }
+            );
+            console.log('???: ', updateUser);
+            if (updateUser > 0) {
+                res.status(200).send({
+                    result: true,
+                    message: '회원정보 수정 성공',
+                });
+            } else {
+                res.status(400).send({
+                    result: false,
+                    massage: '잘못된 접근 입니다.',
+                });
             }
-        );
-        console.log('???: ', updateUser);
-        if (updateUser > 0) {
-            res.status(200).send({
-                result: true,
-                message: '회원정보 수정 성공',
-            });
         } else {
             res.status(400).send({
                 result: false,
-                massage: '잘못된 접근 입니다.',
+                massage: '비밀번호가 일치하지 않습니다.',
             });
         }
     } catch (err) {

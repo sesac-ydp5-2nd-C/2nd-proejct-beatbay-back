@@ -1,7 +1,8 @@
 const { User, Sequelize } = require('../models');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 const { emailUtil } = require('../utils/emailUtil');
+const { bcryptPassword, compareFunc } = require('../utils/encrypt');
 dotenv.config();
 
 // 유저 목록
@@ -105,6 +106,7 @@ exports.userLogin = async (req, res) => {
         console.log('로그인 유저정보 : ', login);
 
         if (login) {
+            console.log('>>>', compareFunc(userPw, login.user_pw));
             if (compareFunc(userPw, login.user_pw) === true) {
                 req.session.userInfo = {
                     sessionId: req.sessionID,
@@ -230,12 +232,14 @@ exports.postFindPass = async (req, res) => {
     }
 };
 
-// 비밀번호 암호화 함수
-const saltRounds = 5;
-function bcryptPassword(password) {
-    return bcrypt.hashSync(password, saltRounds);
-}
+// // 비밀번호 암호화 함수
+// const saltRounds = 5;
+// function bcryptPassword(password) {
+//     return bcrypt.hashSync(password, saltRounds);
+// }
 
-function compareFunc(password, hashedPassword) {
-    return bcrypt.compareSync(password, hashedPassword);
-}
+// function compareFunc(password, hashedPassword) {
+//     return bcrypt.compareSync(password, hashedPassword);
+// }
+
+// module.exports = { bcryptPassword, compareFunc };
