@@ -267,7 +267,7 @@ exports.likeAbility = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         // 파일 유무 확인
-        const filePaths = checkFile(req.files);
+        // const filePaths = checkFile(req.files);
 
         // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역
         const {
@@ -286,6 +286,7 @@ exports.update = async (req, res) => {
 
         if (type == 0) {
             const product_id = parseInt(id);
+            console.log('id 확인 >>>>>', product_id, id);
 
             const updateProduct = await productUpdate(
                 title,
@@ -297,7 +298,7 @@ exports.update = async (req, res) => {
                 method,
                 location,
                 update,
-                filePaths,
+                // filePaths,
                 product_id
             );
 
@@ -315,7 +316,7 @@ exports.update = async (req, res) => {
                 method,
                 location,
                 update,
-                filePaths,
+                // filePaths,
                 ability_id
             );
 
@@ -397,7 +398,6 @@ exports.postTrade = async (req, res) => {
     try {
         // 파일 유무 확인
         const filePaths = checkFiles(req.files);
-        console.log(req.files.path);
 
         // type : 물품 / 재능
         // 제목, 카테고리(대, 중), 가격, 설명, 상태, 거래 방식, 지역
