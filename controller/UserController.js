@@ -167,8 +167,6 @@ exports.emailCertification = async (req, res) => {
 
 exports.emailCheck = async (req, res) => {
     try {
-        console.log('입력 코드 :', req.body.emailCode);
-        console.log('이메일 코드 확인 : ', req.session.emailCode);
         if (req.body.emailCode == req.session.emailCode) {
             res.status(200).send({
                 result: true,
