@@ -32,7 +32,7 @@ exports.kakaoCallback = async (req, res) => {
                     grant_type: 'authorization_code',
                     client_id: process.env.KAKAO_KEY,
                     client_secret: process.env.KAKAO_SECRET_KEY,
-                    redirect_uri: process.env.KAKAO_REDIRECT_URL,
+                    redirect_uri: process.env.KAKAO_PRODUCTION_REDIRECT_URL,
                     code,
                 },
             }
