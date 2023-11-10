@@ -21,8 +21,6 @@ exports.tradeProduct = async (req, res) => {
         let { orderMethod, categoryNum, subCategoryNum, searchKeyword, page } =
             req.query;
 
-        console.log('>> 쿼리문 ', req.query);
-
         orderMethod = parseInt(orderMethod);
         categoryNum = parseInt(categoryNum);
         subCategoryNum = parseInt(subCategoryNum);
@@ -286,8 +284,6 @@ exports.update = async (req, res) => {
 
         if (type == 0) {
             const product_id = parseInt(id);
-            console.log('id 확인 >>>>>', product_id, id);
-
             const updateProduct = await productUpdate(
                 title,
                 category,
@@ -394,7 +390,6 @@ exports.abilityDelete = async (req, res) => {
 
 // 판매 거래 등록하기
 exports.postTrade = async (req, res) => {
-    console.log(req.files);
     try {
         // 파일 유무 확인
         const filePaths = checkFiles(req.files);
@@ -414,7 +409,6 @@ exports.postTrade = async (req, res) => {
             update,
         } = req.body;
 
-        console.log('>>> 세션 정보', req.session.userInfo);
         const { id } = req.session.userInfo;
 
         if (type == 0) {

@@ -38,13 +38,6 @@ const productOne = async (product_id) => {
         include: { model: User },
     });
 
-    // console.log('>>>>>>', product.user_id);
-
-    // console.log(
-    //     'userInfo >>> ',
-    //     await User.findOne({ where: { id: product.user_id } })
-    // );
-
     return product;
 };
 

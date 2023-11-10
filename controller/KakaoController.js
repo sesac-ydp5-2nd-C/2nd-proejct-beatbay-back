@@ -6,7 +6,7 @@ dotenv.config();
 
 exports.kakaoLogin = async (req, res) => {
     const clientID = process.env.KAKAO_KEY;
-    const redirectURI = 'http://localhost:8000/kakao/callback';
+    const redirectURI = process.env.KAKAO_PRODUCTION_REDIRECT_URL;
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=code&response_type=code`;
     try {
         res.redirect(kakaoAuthURL);
@@ -17,7 +17,7 @@ exports.kakaoLogin = async (req, res) => {
 
 exports.kakaoCallback = async (req, res) => {
     const { code } = req.query;
-    console.log('code : ', code);
+
     // 카카오 OAuth 코드를 사용하여 액세스 토큰을 요청
     try {
         const authToken = await axios.post(
@@ -48,7 +48,7 @@ exports.kakaoCallback = async (req, res) => {
                 },
             }
         );
-        console.log('userResponse : ', userResponse);
+
         const userInfo = userResponse.data;
 
         // 사용자 정보를 세션에 저장
@@ -59,8 +59,6 @@ exports.kakaoCallback = async (req, res) => {
         const idExists = await User.findOne({
             where: { user_id: userInfo.kakao_account.email },
         });
-
-        console.log('카카오 정정보보: ', idExists);
 
         // 동일한 아이디(이메일)이 존재하면 해당 아이디 정보 업데이트
         let kakaoUser;
@@ -101,7 +99,6 @@ exports.kakaoCallback = async (req, res) => {
             userInterest: idExists.user_interest,
             isKakao: idExists.is_kakao,
         };
-        console.log('로그인 직전 : ', req.session);
     } catch (err) {
         console.log('Kakao login error: ', err);
         req.session.userInfo = '';
@@ -111,7 +108,7 @@ exports.kakaoCallback = async (req, res) => {
             message: '카카오 로그인 실패',
         });
     }
-    res.redirect('http://localhost:3000');
+    res.redirect(process.env.PRODUCTION_CLIENT);
 };
 
 exports.kakaoLogout = async (req, res) => {

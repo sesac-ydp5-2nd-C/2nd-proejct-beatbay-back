@@ -57,7 +57,6 @@ exports.signupUser = async (req, res) => {
                 is_kakao: false, // 일반 유저 가입이므로 false
             });
             res.send({ result: true, data: signupUser });
-            console.log('result : ', signupUser);
         } else {
             res.send('인증번호를 확인하세요');
         }
@@ -99,11 +98,9 @@ exports.idCheck = async (req, res) => {
 exports.userLogin = async (req, res) => {
     try {
         const { userId, userPw } = req.body;
-        console.log('>>>> 유저', userId, userPw);
         const login = await User.findOne({
             where: { user_id: userId },
         });
-        console.log('로그인 유저정보 : ', login);
 
         if (login) {
             console.log('>>>', compareFunc(userPw, login.user_pw));
@@ -146,7 +143,7 @@ exports.userLogout = async (req, res) => {
                 console.log(err);
                 return;
             }
-            res.redirect('http://localhost:3000'); // 로그아웃 후 홈으로 이동
+            res.redirect(process.env.PRODUCTION_CLIENT); // 로그아웃 후 홈으로 이동
         });
         console.log('로그아웃 성공.');
     } catch (err) {
@@ -170,8 +167,6 @@ exports.emailCertification = async (req, res) => {
 
 exports.emailCheck = async (req, res) => {
     try {
-        console.log('입력 코드 :', req.body.emailCode);
-        console.log('이메일 코드 확인 : ', req.session.emailCode);
         if (req.body.emailCode == req.session.emailCode) {
             res.status(200).send({
                 result: true,

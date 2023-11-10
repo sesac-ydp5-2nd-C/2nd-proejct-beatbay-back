@@ -14,11 +14,8 @@ const { bcryptPassword, compareFunc } = require('../utils/encrypt');
 
 // 마이페이지 메인
 exports.mypageMain = async (req, res) => {
-    // const data = req.headers.Authorization; // 이거로 바뀔거임..
-
     const data = req.session.userInfo;
 
-    console.log('마이페이지에 로그인된 유저', data);
     try {
         if (data) {
             const user = await User.findOne({
@@ -408,7 +405,7 @@ exports.updateUser = async (req, res) => {
                     where: { user_id: userId },
                 }
             );
-            console.log('???: ', updateUser);
+
             if (updateUser > 0) {
                 res.status(200).send({
                     result: true,
