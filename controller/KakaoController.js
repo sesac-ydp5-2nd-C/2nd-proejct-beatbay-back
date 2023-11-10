@@ -6,7 +6,7 @@ dotenv.config();
 
 exports.kakaoLogin = async (req, res) => {
     const clientID = process.env.KAKAO_KEY;
-    const redirectURI = 'http://localhost:8000/kakao/callback';
+    const redirectURI = process.env.KAKAO_PRODUCTION_REDIRECT_URL;
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&response_type=code&response_type=code`;
     try {
         res.redirect(kakaoAuthURL);
@@ -108,7 +108,7 @@ exports.kakaoCallback = async (req, res) => {
             message: '카카오 로그인 실패',
         });
     }
-    res.redirect('http://localhost:3000');
+    res.redirect(process.env.PRODUCTION_CLIENT);
 };
 
 exports.kakaoLogout = async (req, res) => {
