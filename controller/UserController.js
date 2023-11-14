@@ -128,6 +128,7 @@ exports.userLogin = async (req, res) => {
             console.log('아이디를 입력하세요.');
         } else {
             console.log('아이디를 확인하세요');
+            res.status(401).send({ result: false });
         }
     } catch (err) {
         console.log(err);
