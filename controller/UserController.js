@@ -143,7 +143,8 @@ exports.userLogout = async (req, res) => {
                 console.log(err);
                 return;
             }
-            res.redirect(process.env.PRODUCTION_CLIENT); // 로그아웃 후 홈으로 이동
+            res.status(200).send({ result: true });
+            // res.redirect(process.env.PRODUCTION_CLIENT); // 로그아웃 후 홈으로 이동
         });
         console.log('로그아웃 성공.');
     } catch (err) {
