@@ -34,12 +34,12 @@ exports.signupUser = async (req, res) => {
         const { userId, userPw, userNickname, authCode } = req.body;
 
         if (!emailPattern.test(userId)) {
-            return res.status(400).send({
+            return res.status(401).send({
                 result: false,
                 message: '올바른 이메일이 아닙니다.',
             });
         } else if (!passwordPattern.test(userPw)) {
-            return res.status(400).send({
+            return res.status(401).send({
                 result: false,
                 message:
                     '비밀번호는 최소 8자리 이상이어야 하며, 특수문자(@#$%^&+=!)와 영문자, 숫자를 모두 포함해야 합니다.',
@@ -122,7 +122,7 @@ exports.userLogin = async (req, res) => {
                 res.send({ result: true, logUserData });
             } else {
                 console.log(false);
-                res.status(400).send({ result: false });
+                res.status(401).send({ result: false });
             }
         } else if (!userId) {
             console.log('아이디를 입력하세요.');
@@ -200,7 +200,7 @@ exports.postFindPass = async (req, res) => {
         const passwordPattern =
             /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,}$/;
         if (!passwordPattern.test(newPass)) {
-            return res.status(400).send({
+            return res.status(401).send({
                 result: false,
                 message:
                     '비밀번호는 최소 8자리 이상이어야 하며, 특수문자(@#$%^&+=!)와 영문자, 숫자를 모두 포함해야 합니다.',
