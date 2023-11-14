@@ -7,6 +7,8 @@ const app = express();
 const io = require('./utils/io');
 const PORT = 8000;
 const cors = require('cors');
+const HTTPS = require('https');
+const fs = require('fs');
 const { sequelize } = require('./models');
 dotenv.config();
 
@@ -34,6 +36,8 @@ app.use(
             name: 'user-session-cookie',
             signed: true, // 암호화 쿠키 사용
         },
+        sameSite: 'none',
+        secure: true,
     })
 );
 // 쿠키 암호화
@@ -104,7 +108,31 @@ app.get('*', (req, res) => {
 });
 
 sequelize.sync({ force: false }).then(() => {
-    app.listen(PORT, () => {
-        console.log(`${process.env.PRODUCTION_URL}:${PORT}`);
-    });
+    // 배포시 https로 배포
+    if (process.env.IS_PRODUCTION === 'YES') {
+        try {
+            const option = {
+                ca: fs.readFileSync(
+                    `/etc/letsencrypt/live/${process.env.PRODUCTION_DOMAIN}/fullchain.pem`
+                ),
+                key: fs.readFileSync(
+                    `/etc/letsencrypt/live/${process.env.PRODUCTION_DOMAIN}/privkey.pem`
+                ),
+                cert: fs.readFileSync(
+                    `/etc/letsencrypt/live/${process.env.PRODUCTION_DOMAIN}/cert.pem`
+                ),
+            };
+
+            HTTPS.createServer(option, app).listen(PORT, () => {
+                console.log('HTTPS 서버가 실행되었습니다. 포트 :: ' + PORT);
+            });
+        } catch (error) {
+            console.log('HTTPS 서버가 실행되지 않습니다.');
+            console.log(error);
+        }
+    } else {
+        app.listen(PORT, () => {
+            console.log(`http:localhost:${PORT}`);
+        });
+    }
 });

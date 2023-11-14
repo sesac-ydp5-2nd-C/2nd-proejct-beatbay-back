@@ -9,8 +9,30 @@ const {
 const { Op } = require('sequelize');
 const express = require('express');
 const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
+const https = require('https');
+const fs = require('fs');
+let io;
+let server;
+if (process.env.IS_PRODUCTION === 'YES') {
+    const options = {
+        key: fs.readFileSync(
+            `/etc/letsencrypt/live/${process.env.PRODUCTION_DOMAIN}/privkey.pem`
+        ),
+        cert: fs.readFileSync(
+            `/etc/letsencrypt/live/${process.env.PRODUCTION_DOMAIN}/cert.pem`
+        ),
+        ca: fs.readFileSync(
+            `/etc/letsencrypt/live/${process.env.PRODUCTION_DOMAIN}/fullchain.pem`
+        ),
+
+        requestCert: false,
+        rejectUnauthorized: false,
+    };
+    server = https.createServer(options, app);
+} else {
+    server = require('http').createServer(app);
+}
+io = require('socket.io')(server, {
     cors: {
         origin: '*',
     },
@@ -261,6 +283,10 @@ io.sockets.on('connection', (socket) => {
     });
 });
 
-http.listen(5001, () => {
-    console.log('Connected at 5001');
+server.listen(5001, () => {
+    console.log(
+        `${
+            process.env.IS_PRODUCTION === 'YES' ? 'PRODUCTION' : 'DEVELOPMENT'
+        } : Socket on PORT 5001`
+    );
 });
