@@ -31,8 +31,8 @@ exports.tradeProduct = async (req, res) => {
             // 최신순
             order = 'used_product.createdAt';
         } else if (orderMethod === 1) {
-            // 인기순
-            order = 'used_product.product_like'; // 좋아요 기준
+            // 조회수 순
+            order = 'used_product.product_count';
         } else if (orderMethod === 2) {
             // 낮은 가격순
             order = 'used_product.product_price';
@@ -73,8 +73,8 @@ exports.tradeAbility = async (req, res) => {
             // 최신순
             order = 'used_ability.createdAt';
         } else if (orderMethod === 1) {
-            // 인기순
-            order = 'used_ability.ability_like'; // 좋아요 기준
+            // 조회수 순
+            order = 'used_ability.ability_count';
         } else if (orderMethod === 2) {
             // 낮은 가격순
             order = 'used_ability.ability_price';
