@@ -133,7 +133,7 @@ exports.kakaoLogout = async (req, res) => {
             }
         }
         return res
-            .status(400)
+            .status(401)
             .send({ result: false, message: '로그아웃 실패' });
     } catch (error) {
         console.error('에러 :', error);
