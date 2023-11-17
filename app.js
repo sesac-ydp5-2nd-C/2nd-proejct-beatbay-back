@@ -100,8 +100,16 @@ const noticeRouter = require('./routes/notice');
 app.use('/notice', noticeRouter);
 
 // 관리자
+function isAdmin(req, res, next) {
+    if (req.session.userInfo && req.session.userInfo.userGrade === 99) {
+        next();
+    } else {
+        res.send('404');
+    }
+}
+
 const adminRouter = require('./routes/admin');
-app.use('/admin', adminRouter);
+app.use('/admin', isAdmin, adminRouter);
 
 app.get('*', (req, res) => {
     res.send('404');
@@ -132,7 +140,7 @@ sequelize.sync({ force: false }).then(() => {
         }
     } else {
         app.listen(PORT, () => {
-            console.log(`http:localhost:${PORT}`);
+            console.log(`http://localhost:${PORT}`);
         });
     }
 });
