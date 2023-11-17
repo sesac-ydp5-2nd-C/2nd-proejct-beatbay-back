@@ -1,7 +1,32 @@
 const { DataTypes } = require('sequelize');
 const Notice = (Sequelize, sequelize) => {
-    const model = Sequelize.define('notice', {
-        // 제목, 내용
-        // 작성자, 날짜 -> 상의
-    });
+    const model = Sequelize.define(
+        'notice',
+        {
+            id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            notice_title: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            notice_content: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+        },
+        {
+            tableName: 'notice',
+            freezeTableName: true,
+            timestamps: false,
+            charset: 'utf8mb4',
+            collate: 'utf8mb4_general_ci',
+        }
+    );
+    return model;
 };
+
+module.exports = Notice;

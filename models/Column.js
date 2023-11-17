@@ -1,7 +1,32 @@
 const { DataTypes } = require('sequelize');
-const Cokumn = (Sequelize, sequelize) => {
-    const model = Sequelize.define('column', {
-        // 제목, 내용
-        // 작성자, 날짜 -> 상의
-    });
+const Column = (Sequelize, sequelize) => {
+    const model = Sequelize.define(
+        'column',
+        {
+            id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            column_title: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            colunm_content: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+        },
+        {
+            tableName: 'column',
+            freezeTableName: true,
+            timestamps: false,
+            charset: 'utf8mb4',
+            collate: 'utf8mb4_general_ci',
+        }
+    );
+    return model;
 };
+
+module.exports = Column;
