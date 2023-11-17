@@ -29,7 +29,7 @@
 
     > 이재민 (https://github.com/flashrifle) : 로그인/회원가입 & 카카오 로그인 & 마이 페이지 & 채팅 & 웹 배포 & DB 관리
     >
-    > 김정윤 (https://github.com/pipi-shortstocking) : 물품/재능 & 거래 & 팔로우 & 리뷰
+    > 김정윤 (https://github.com/pipi-shortstocking) : 물품/재능 & 거래 & 팔로우 & 리뷰 & 관리자 & 공지사항/칼럼
 
 -   **frontend**
 

@@ -1,16 +1,26 @@
-// 공지사항
-exports.noticeInform = async (req, res) => {
+const { Column, Notice, sequelize } = require('../models');
+
+// 공지 사항
+exports.notice = async (req, res) => {
     try {
-        res.send('notice inform');
+        const notices = await Notice.findAll({
+            order: [[sequelize.col('notice.createdAt'), 'DESC']],
+        });
+
+        res.send(notices);
     } catch (err) {
         console.log(err);
     }
 };
 
 // 칼럼
-exports.noticeColumn = async (req, res) => {
+exports.column = async (req, res) => {
     try {
-        res.send('notice column');
+        const columns = await Column.findAll({
+            order: [[sequelize.col('column.createdAt'), 'DESC']],
+        });
+
+        res.send(columns);
     } catch (err) {
         console.log(err);
     }

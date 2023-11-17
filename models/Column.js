@@ -13,7 +13,7 @@ const Column = (Sequelize, sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            colunm_content: {
+            column_content: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
@@ -21,7 +21,7 @@ const Column = (Sequelize, sequelize) => {
         {
             tableName: 'column',
             freezeTableName: true,
-            timestamps: false,
+            timestamps: true,
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         }
