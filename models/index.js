@@ -22,6 +22,8 @@ const Follow = require('./Follow')(sequelize, Sequelize);
 const Review = require('./Review')(sequelize, Sequelize);
 const ChatRoom = require('./ChatRoom')(sequelize, Sequelize);
 const ChatMessage = require('./ChatMessage')(sequelize, Sequelize);
+const Column = require('./Column')(sequelize, Sequelize);
+const Notice = require('./Notice')(sequelize, Sequelize);
 
 // 유저 > 유저권한 외래키
 UserAuth.hasOne(User, {
@@ -166,6 +168,8 @@ db.Follow = Follow;
 db.Review = Review;
 db.ChatRoom = ChatRoom;
 db.ChatMessage = ChatMessage;
+db.Column = Column;
+db.Notice = Notice;
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

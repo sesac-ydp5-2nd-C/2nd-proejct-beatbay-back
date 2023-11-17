@@ -97,7 +97,7 @@ app.use('/trade', tradeRouter);
 
 // 칼럼/공지사항
 const noticeRouter = require('./routes/notice');
-app.use('/notice', noticeRouter);
+app.use('/inform', noticeRouter);
 
 // 관리자
 function isAdmin(req, res, next) {

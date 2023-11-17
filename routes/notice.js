@@ -3,9 +3,9 @@ const router = express.Router();
 const controller = require('../controller/NoticeController');
 
 // 공지사항
-router.get('/inform', controller.noticeInform);
+router.get('/notice', controller.notice);
 
 // 칼럼
-router.get('/column', controller.noticeColumn);
+router.get('/column', controller.column);
 
 module.exports = router;
