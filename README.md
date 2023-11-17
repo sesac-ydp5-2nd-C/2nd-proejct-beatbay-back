@@ -2,7 +2,8 @@
 
 > 음악인들을 위한 중고장터 입니다.
 >
-> <img width="1289" alt="image" src="https://github.com/sesac-ydp5-2nd-C/2nd-project-beatbay-back/assets/63192543/00ef25ad-0562-49f6-8d38-6dd4c0240b34">
+> ![image](https://github.com/sesac-ydp5-2nd-C/2nd-project-beatbay-back/assets/95032287/f01b41be-72b5-4397-a390-e622ed9b00ea)
+
 
 ## About Project :point_down:
 
