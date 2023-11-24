@@ -131,7 +131,7 @@
 
 | 찜 목록                                                                                                                       | 회원정보 수정                                                                                                                           |
 | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| ![찜 목록](https://github.com/sesac-ydp5-2nd-C/2nd-project-beatbay-back/assets/95032287/d036dc8c-e1d1-4e26-9952-92db28ffc7e3) | ![찜 목록](https://github.com/sesac-ydp5-2nd-C/2nd-project-beatbay-back/assets/95032287/d036dc8c-e1d1-4e26-9952-92db28ffc7e3) 임시 사진 |
+| ![찜 목록](https://github.com/sesac-ydp5-2nd-C/2nd-project-beatbay-back/assets/95032287/d036dc8c-e1d1-4e26-9952-92db28ffc7e3) | ![회원정보 수정](https://github.com/sesac-ydp5-2nd-C/2nd-project-beatbay-back/assets/100843910/392b9ef7-bbd1-4a3b-bc83-85335d92425c)|
 
 | 채팅방 선택 | 채팅   |
 | ----------- | ------ |
