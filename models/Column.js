@@ -17,6 +17,10 @@ const Column = (Sequelize, sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            column_url: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         },
         {
             tableName: 'column',

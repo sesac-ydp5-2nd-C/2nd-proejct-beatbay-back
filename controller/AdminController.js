@@ -126,11 +126,12 @@ exports.updateNotice = async (req, res) => {
 // 칼럼 등록
 exports.columnPost = async (req, res) => {
     try {
-        const { column_title, column_content } = req.body;
+        const { column_title, column_content, column_url } = req.body;
 
         let column = await Column.create({
             column_title,
             column_content,
+            column_url,
         });
 
         res.send(column);
@@ -155,12 +156,14 @@ exports.deleteColumn = async (req, res) => {
 // 칼럼 수정
 exports.updateColumn = async (req, res) => {
     try {
-        const { column_id, column_title, column_content } = req.body;
+        const { column_id, column_title, column_content, column_url } =
+            req.body;
 
         let column = await Column.update(
             {
                 column_title,
                 column_content,
+                column_url,
             },
             {
                 where: { id: column_id },
