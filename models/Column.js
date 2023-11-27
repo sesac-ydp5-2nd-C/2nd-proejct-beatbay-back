@@ -21,6 +21,10 @@ const Column = (Sequelize, sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            type: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
         },
         {
             tableName: 'column',
