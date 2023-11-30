@@ -81,6 +81,7 @@ exports.noticePost = async (req, res) => {
         let notice = await Notice.create({
             notice_title,
             notice_content,
+            type,
         });
 
         res.send(notice);
@@ -111,6 +112,7 @@ exports.updateNotice = async (req, res) => {
             {
                 notice_title,
                 notice_content,
+                type,
             },
             {
                 where: { id: notice_id },
@@ -126,11 +128,13 @@ exports.updateNotice = async (req, res) => {
 // 칼럼 등록
 exports.columnPost = async (req, res) => {
     try {
-        const { column_title, column_content } = req.body;
+        const { column_title, column_content, column_url } = req.body;
 
         let column = await Column.create({
             column_title,
             column_content,
+            column_url,
+            type,
         });
 
         res.send(column);
@@ -155,12 +159,15 @@ exports.deleteColumn = async (req, res) => {
 // 칼럼 수정
 exports.updateColumn = async (req, res) => {
     try {
-        const { column_id, column_title, column_content } = req.body;
+        const { column_id, column_title, column_content, column_url } =
+            req.body;
 
         let column = await Column.update(
             {
                 column_title,
                 column_content,
+                column_url,
+                type,
             },
             {
                 where: { id: column_id },
